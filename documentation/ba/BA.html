@@ -1,0 +1,998 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>BA block — Design and Evaluation of a Continuous Monitoring System for Early Detection of Suspicious npm Package Publications Using Multi-Stage Filtering</title>
+<style>
+@page { size: 21cm 29.7cm; margin: 2cm 2cm 2cm 2.5cm; }
+body { font-family: "Times New Roman", serif; font-size: 12pt; line-height: 1.5; }
+h1 { font-size: 14pt; font-weight: bold; text-align: center; text-transform: uppercase; margin: 0 0 12pt; page-break-before: always; }
+h2 { font-size: 13pt; font-weight: bold; margin: 14pt 0 6pt; }
+h3 { font-size: 12pt; font-weight: bold; margin: 12pt 0 6pt; }
+p { margin: 0 0 6pt; text-align: justify; }
+li { margin: 0 0 3pt; }
+table { border-collapse: collapse; width: 100%; margin: 6pt 0 10pt; font-size: 10pt; line-height: 1.15; }
+th, td { border: 1px solid #000; padding: 3pt 5pt; vertical-align: top; text-align: left; }
+th { font-weight: bold; }
+p.fig { text-align: center; margin: 8pt 0 2pt; }
+p.cap { text-align: center; font-style: italic; font-size: 11pt; margin: 0 0 10pt; }
+code { font-family: "Courier New", monospace; font-size: 10.5pt; }
+.title p { text-align: center; margin: 0; line-height: 1.3; }
+.title .t4 { font-weight: bold; font-size: 14pt; }
+.title .t5 { font-weight: bold; font-size: 14pt; text-transform: uppercase; }
+.title .t6 { text-align: right; }
+p.toc-placeholder { text-align: left; }
+p.tochead { font-size: 14pt; font-weight: bold; text-align: center; margin: 0 0 12pt; }
+table.figs { border: none; width: 100%; margin: 6pt 0 8pt; }
+table.figs td { border: none; width: 50%; text-align: center; vertical-align: top; padding: 2pt 4pt; font-style: italic; font-size: 10.5pt; }
+</style></head><body>
+
+<div class="title">
+<p class="t2">EUROPEAN HUMANITIES UNIVERSITY</p>
+<p class="t3">&nbsp;</p>
+<p class="t2">Academic Department of Informatics</p>
+<p class="t2">Study program: Informatika (Bachelor, part-time)</p>
+<p class="t3">&nbsp;</p><p class="t3">&nbsp;</p><p class="t3">&nbsp;</p><p class="t3">&nbsp;</p><p class="t3">&nbsp;</p><p class="t3">&nbsp;</p><p class="t3">&nbsp;</p><p class="t3">&nbsp;</p>
+<p class="t4">IVAN KULIASHOV</p>
+<p class="t2">5th year student</p>
+<p class="t3">&nbsp;</p><p class="t3">&nbsp;</p><p class="t3">&nbsp;</p><p class="t3">&nbsp;</p>
+<p class="t5">DESIGN AND EVALUATION OF A CONTINUOUS MONITORING SYSTEM FOR EARLY DETECTION OF SUSPICIOUS NPM PACKAGE PUBLICATIONS USING MULTI-STAGE FILTERING</p>
+<p class="t3">&nbsp;</p>
+<p class="t2">BACHELOR PROJECT</p>
+<p class="t2">Business analysis block: Introduction, Chapter 1 (Analytical part), Chapter 2 (System requirements)</p>
+<p class="t2">Project type: individual</p>
+
+<p class="t3">&nbsp;</p><p class="t3">&nbsp;</p><p class="t3">&nbsp;</p><p class="t3">&nbsp;</p><p class="t3">&nbsp;</p><p class="t3">&nbsp;</p>
+<p class="t6">Supervisor: dr hab., prof. UKEN Serhii Semenov</p>
+<p class="t3">&nbsp;</p><p class="t3">&nbsp;</p><p class="t3">&nbsp;</p><p class="t3">&nbsp;</p><p class="t3">&nbsp;</p><p class="t3">&nbsp;</p><p class="t3">&nbsp;</p><p class="t3">&nbsp;</p><p class="t3">&nbsp;</p><p class="t3">&nbsp;</p><p class="t3">&nbsp;</p><p class="t3">&nbsp;</p><p class="t3">&nbsp;</p><p class="t3">&nbsp;</p>
+<p class="t2">Vilnius, 2026</p>
+</div>
+<br clear="all" style="page-break-before:always">
+<p class="tochead">TABLE OF CONTENTS</p>
+<p class="toc-placeholder">[[TOC]]</p>
+<h1>Introduction</h1>
+<p><strong>Relevance and problem.</strong> The npm registry is the supply chain of practically every JavaScript application. In the second quarter of 2026 it accounted for 96.6 % of all malicious open-source packages recorded by Sonatype [1]. The registry&#39;s answer, a content scan of every new package before it becomes installable (live since 28 July 2026 [2]), did not stop the ChainDrop worm a week later: 444 packages and 2 212 versions were published in under four hours from compromised but legitimate accounts, with valid provenance attestations [3], [4]. A content scanner cannot tell a stolen credential from its owner. What distinguishes such publications is their metadata — who published, when, in what rhythm, into which release lines — and none of the services examined in Section 1.3 watches this layer continuously for the consumer. Three groups have the problem: security engineers of organisations that consume npm packages learn about a compromised package from the news, when the evidence is already gone; maintainers have no signal that their own package was published by someone else; researchers cannot measure the residual risk after the registry&#39;s gate, because the registry deletes the malicious versions. The problem matters now because the attacks of 2026 passed a gate that did not exist a year earlier, so the residual risk after that gate is unmeasured.</p>
+<p><strong>Goal.</strong> To analyse how suspicious npm publications are detected today and to specify verifiable requirements for a continuous, metadata-based monitoring service that gives security engineers an actionable signal before the advisory. The bachelor project as a whole designs, implements and evaluates this service; this block covers its analysis and requirements.</p>
+<p><strong>Objectives:</strong></p>
+<ol>
+<li>describe how suspicious publications are detected today and where time, signal and evidence are lost (Section 1.1);</li>
+<li>review the sources and six analogs and derive what a new solution must do (Sections 1.2–1.4);</li>
+<li>state the vision, the business goals with measurable KPIs, the stakeholders and the scope (Sections 2.1–2.3);</li>
+<li>specify the solution concept and the functional requirements as epics, user stories with acceptance criteria and use cases (Sections 2.4–2.6);</li>
+<li>specify the non-functional and legal requirements, the risks and the way the result will be verified (Sections 2.7–2.10).</li>
+</ol>
+<p><strong>Object and subject.</strong> The object is the process of detecting suspicious publications in the public npm registry: from the moment a version is published to the moment a security engineer has evidence to act on. The subject is the automatable side of that process — scoring the stream of publication events from metadata and package history, selecting a small set of candidates for enrichment, and producing explainable alerts with durable evidence.</p>
+<p><strong>Methods.</strong> Requirements were gathered by four methods. <em>Document analysis</em>: the project description, the registry&#39;s API documentation and announcements [2], [5], incident write-ups [3], [6] and the standards on provenance and secure development [7]–[9]. <em>Measurement</em>: a probe of the live change feed, package-document sizes and external-API quotas, run before the design (Section 1.2). <em>Benchmarking</em>: six analog tools examined and tried out (Section 1.3). <em>Expert consultation</em>: two sessions with the supervisor established the attack classes, the two-stage architecture and the placement of version rules; no external interviews were held (Section 2.8).</p>
+<p><strong>Structure.</strong> Chapter 1 analyses the current process, the sources and the analogs, and lists the problems to solve. Chapter 2 states the requirements: vision and KPIs, stakeholders, scope, the solution concept, functional and non-functional requirements, legal constraints, risks and verification. Appendix A holds the backlog, Appendix B the diagrams at full size.</p>
+
+<h1>Chapter 1. Analytical part</h1>
+<h2>1.1 Current state of the problem</h2>
+<p><strong>Who is involved.</strong> Three groups meet at the moment a package is published to the public npm registry. The <em>registry</em> (npm, Inc.) accepts the publication and, since 28 July 2026, scans the content of every new package before it becomes installable [2]. <em>Consumers</em> — application security engineers and developers — learn about dangerous packages from vulnerability databases, dependency scanners and the news. <em>Maintainers</em> own the packages and the accounts that publish them; when an account or a release pipeline is compromised, the maintainer is usually the last to know.</p>
+<p><strong>How the task is solved today (AS-IS).</strong> Figure 1.1 shows the process as it runs now, with four lanes: attacker, registry, security vendors and the security engineer of a consuming organisation. The attacker obtains a publishing path — a stolen token, a hijacked CI pipeline or a look-alike name — and publishes. The registry&#39;s content scan either blocks a package it can recognise, holds it for manual review, or lets it through. For the two attack classes studied in this project the scan lets the package through by construction: in a compromised-publisher attack the content is signed by the legitimate pipeline and carries a valid provenance attestation [7], [8]; in a worm the payload is delivered through a dependency chain the scanner judges file by file. Security vendors notice the campaign from telemetry or from a researcher&#39;s report, publish an advisory, and the registry removes the malicious versions. Only then does the consumer&#39;s tooling react: <code>npm audit</code> and similar scanners compare the lock file with the advisory database [10].</p>
+<p><strong>Where time and data are lost.</strong></p>
+<ul>
+<li><em>Time.</em> Between the first malicious publication and the advisory lie hours; in the ChainDrop campaign of 4 August 2026 the first malicious version was published at 09:35 UTC and by 13:20 the worm had published malicious versions of 433 further packages [4]. During that window every <code>npm install</code> of an affected version succeeds and no consumer tool complains.</li>
+<li><em>Signal.</em> The metadata of a malicious publication is anomalous from the first second — a publisher with no history, three versions in non-adjacent release lines within a minute, a release after years of silence, a lifecycle script that appears out of nowhere [11], [12] — but no service watches this layer continuously for the whole registry. The registry&#39;s own change feed exposes it to anyone [5].</li>
+<li><em>Evidence.</em> The registry purges malicious versions. Their publication times survive only in the <code>time</code> field of the package document, while the manifests and the publisher of each version are gone. A later investigation cannot reconstruct what happened, and a researcher cannot build a dataset from the registry alone: the purged versions of <code>node-ipc</code> keep only their dates (Section 1.3).</li>
+<li><em>Effort.</em> Every consuming organisation repeats the same investigation of the same package after the same advisory, because the evidence was never captured once.</li>
+</ul>
+<p><p class="fig"><img src="file:///C:/_PAGES/ELS-JS/npm/documentation/ba/assets/activity-as-is.png" width="560" height="338" alt="Figure 1.1 — AS-IS process of detecting a malicious npm publication (UML activity diagram; full size in Appendix B)"></p><p class="cap">Figure 1.1 — AS-IS process of detecting a malicious npm publication (UML activity diagram; full size in Appendix B)</p></p>
+<p><strong>TO-BE in short.</strong> A monitoring service reads the registry change feed continuously. A first stage scores every event without network requests from its own journal: rhythm of publications, similarity of the name to popular packages, revision jumps, watchlist membership. Only the few percent of events that score as candidates are enriched from external sources under per-source quotas: publisher history, maintainers, manifest changes, release lines, repository state. An alert with a decomposed score and an evidence snapshot reaches the analyst minutes after the publication, before the advisory exists and before the registry purges the version. The analyst&#39;s verdict is recorded and becomes the ground truth for measuring the service. Figure 1.1 shows this TO-BE lane at the bottom of the same diagram.</p>
+<h2>1.2 Review of sources</h2>
+<p>The sources fall into five groups. For each group the review states what it contributes and where it stops; the requirements of Chapter 2 refer back to these conclusions.</p>
+<p><strong>Taxonomies and empirical studies.</strong> Ohm et al. reviewed 174 malicious packages from npm, PyPI and RubyGems and built the first attack tree of open-source supply-chain attacks; most packages trigger on installation, and typosquatting and account compromise are the dominant vectors [11]. Zimmermann et al. measured the npm dependency graph and showed that compromising one of a few hundred maintainer accounts reaches thousands of packages [13]. Duan et al. reported that metadata and install-time behaviour already separate a large share of malicious packages [14]. Ladisa et al. systematised 107 attack vectors and named publishing from a compromised account and manipulation of release lines among the vectors that content signing does not close [12]. Zahan et al. identified &quot;weak links&quot; in npm — inactive maintainers, expired domains, install scripts — as signals measurable from metadata [15]. <em>Conclusion:</em> the attack classes of this project are known, and the metadata signals that expose them are listed, but as static package properties, not as events in a continuous stream.</p>
+<p><strong>Detection approaches.</strong> Sejfia and Schäfer trained a classifier on package contents with practical precision on npm, at the price of a tarball and a labelled corpus [16]. Vu et al. (LastPyMile) detect the discrepancy between the source repository and the published artefact, a strong signal for a hijacked pipeline, at the price of cloning the repository for every release [17]. Taylor et al. (TypoGard) detect typosquatting from name distance and popularity at install time [18]. <em>Conclusion:</em> each approach covers one attack class, most need the content or the repository, none runs over the whole registry in real time, and none keeps evidence after the registry removes the version. Chapter 2 therefore requires a two-stage design, explainable features instead of a trained model, and evidence snapshots at observation time.</p>
+<p><strong>Industry reports and incident write-ups.</strong> Sonatype attributes 96.6 % of malicious open-source packages in Q2 2026 to npm [1]. The write-ups of ChainDrop [4], [19] (Aikido reported it as a new wave of the Shai-Hulud worm [3]) and node-ipc [6], [20] give the timings used for the replay scenarios of the evaluation. ChainDrop: 11 packages in the first wave, 433 more by 13:20, 444 packages and 2 212 versions in under four hours [4]; Aikido counted 1 381 versions in its first update [3]. node-ipc: three versions into non-adjacent lines on one day, from a maintainer account that had published none of the recent releases [20]. Three incidents of 2025 are kept apart as held-out scenarios, not used to design or calibrate the features: the chalk/debug maintainer compromise [21], the first Shai-Hulud worm [22] and the nx release-pipeline compromise [23]. The registry&#39;s announcement of pre-publication scanning [2] states its own limit: it blocks the malware it can recognise. <em>Conclusion:</em> the incidents of 2026 passed a content gate already in place; the residual risk after that gate is what the project measures.</p>
+<p><strong>Standards and provenance.</strong> SLSA provenance [8] and npm provenance statements [7] prove that an artefact was built by a given pipeline from a given commit — authenticity, not intent: ChainDrop&#39;s poisoned versions carried valid attestations because the pipeline itself was compromised. NIST SP 800-218 [9] frames the consumer&#39;s duty to verify third-party components but prescribes no mechanism for the hours before an advisory. <em>Conclusion:</em> provenance is recorded as evidence but has no weight in the risk score.</p>
+<p><strong>Data sources and their limits.</strong> The registry API documents the <code>_changes</code> feed and the package document [5]; deps.dev [24], ecosyste.ms [25], RDAP [26] and the GitHub REST API [27] expose dependency, repository, domain-registration and commit data under rate limits. Measurements made for this project in October 2026 set the design&#39;s numbers: the feed carries 1.0–1.4 events per second (90 000–120 000 events a day) with no payload beyond the package name and a revision number; a package document is 71 KB at the median and 8 MB at the 99th percentile, so one per event would cost 18–27 GB a day; GitHub allows 5 000 requests an hour with a token and 60 without. <em>Conclusion:</em> enriching every event is impossible within quotas, which determines the two-stage architecture and the budget layer of Chapter 2. Legal and ethical sources — the GDPR [28] and WCAG 2.1 [29] — are applied in Section 2.8.</p>
+<h2>1.3 Analysis of analogs</h2>
+<p>Six solutions were examined and all six were tried out, five of them on the same reference package, <code>node-ipc</code>, which had three malicious versions published and purged on 14 May 2026 [6]; the figures show what each tool reports five months later.</p>
+<p><strong>npm audit</strong> (open source, part of the npm client) compares the dependency tree of a project with the GitHub Advisory Database. In the trial project with <code>lodash@4.17.15</code>, <code>minimist@1.2.5</code> and <code>node-ipc@9.2.1</code> it reported two vulnerabilities, both known for years, and nothing about the node-ipc incident (Figure 1.2): no advisory covers the purged versions, so the tool has nothing to compare with. It works only after disclosure and only for packages already in a project.</p>
+<table class="figs"><tr><td><img src="file:///C:/_PAGES/ELS-JS/npm/documentation/ba/assets/analog-audit.png" width="290" height="261" alt=""><br>Figure 1.2 — npm audit on the trial project: two known vulnerabilities, nothing about node-ipc</td><td><img src="file:///C:/_PAGES/ELS-JS/npm/documentation/ba/assets/analog-guarddog.png" width="290" height="261" alt=""><br>Figure 1.3 — GuardDog scan of node-ipc from the Docker image: content indicators only</td></tr></table><p><strong>GuardDog</strong> (Datadog, open source) [30] scans the content of a package tarball with semantic rules for malicious patterns. Run from its Docker image against <code>node-ipc</code>, it reported three low-risk indicators of &quot;system information collection&quot; in the legitimate code (hostname and user name used to build the socket path) and an overall assessment of 3.3/10 (Figure 1.3). The tool sees content, not history; it cannot know that the publishing account differed from the previous releases, and it cannot scan a version the registry has already removed.</p>
+<p><strong>Snyk Advisor / Snyk Vulnerability Database</strong> (commercial, free tier) [31] shows a package health score from security, popularity, maintenance and community signals. For <code>node-ipc</code> it shows 76/100, &quot;no known security issues&quot; in the latest version, and a banner that &quot;this package was involved in a security incident resulting in compromised versions being published&quot; (Figure 1.4). The banner is a manually curated note added after the incident; the compromised versions themselves are absent from the version list because the registry purged them.</p>
+<table class="figs"><tr><td><img src="file:///C:/_PAGES/ELS-JS/npm/documentation/ba/assets/analog-snyk.png" width="290" height="317" alt=""><br>Figure 1.4 — Snyk Advisor page of node-ipc: a curated incident note, no trace of the purged versions</td><td><img src="file:///C:/_PAGES/ELS-JS/npm/documentation/ba/assets/analog-depsdev.png" width="290" height="317" alt=""><br>Figure 1.5 — deps.dev page of node-ipc: no advisories, a repository scorecard</td></tr></table><p><strong>deps.dev / OpenSSF Scorecard</strong> (Google and the Open Source Security Foundation, open data) shows advisories, licences, dependencies and a Scorecard of repository practices. For <code>node-ipc</code> it reports &quot;no advisories detected&quot; and a Scorecard of 6.1/10 (Figure 1.5). The data describes the repository and the dependency graph, not individual publications.</p>
+<p><strong>Aikido Intel and Aikido Safe Chain</strong> (Aikido Security; the feed is public, Safe Chain is open source). Aikido Intel is a feed of malware and vulnerabilities that the vendor detects by scanning new packages, published within hours of the publication; its npm malware tab on 28 October 2026 listed packages such as <code>identity-two-factor@999.0.0</code> and <code>@zmtcdn/ui@9999.0.7</code> flagged 9–12 hours earlier (Figure 1.6) [32]. Safe Chain wraps the package manager and refuses to install versions that the feed lists; it also hides versions younger than a minimum age during resolution [33]. In the trial (Figure 1.7) Safe Chain installed <code>node-ipc@9.2.1</code> and <code>minimist@1.2.5</code> without a remark. For two versions listed as malware that morning, npm reported &quot;no matching version&quot; and Safe Chain noted that &quot;some package versions were suppressed due to minimum package age&quot;. The registry had already removed them, and the age rule had hidden any remaining fresh version. Safe Chain is the only analog with a temporal metadata rule, applied at install time on the consumer&#39;s machine; it does not look at the publisher or the history of the package, and the feed behind it is still a list of recognised malware.</p>
+<table class="figs"><tr><td><img src="file:///C:/_PAGES/ELS-JS/npm/documentation/ba/assets/analog-aikido-intel.png" width="290" height="317" alt=""><br>Figure 1.6 — Aikido Intel, npm malware tab: detections published hours after the malicious versions</td><td><img src="file:///C:/_PAGES/ELS-JS/npm/documentation/ba/assets/analog-aikido-safechain.png" width="290" height="220" alt=""><br>Figure 1.7 — Aikido Safe Chain in a container: benign versions pass; listed versions are already gone and suppressed by the minimum-age rule</td></tr></table><p><strong>Socket.dev</strong> (commercial, free tier for open source) analyses package contents at install and pull-request time and flags behaviours such as install scripts, network access, obfuscation and, in its newer releases, publisher-related signals such as a new maintainer [34]. Its page for <code>node-ipc</code> (Figure 1.8, left) shows a Supply Chain Security score of 99 for the latest version and a banner &quot;this package has malicious versions linked to the ongoing node-ipc supply chain attack&quot; naming 9.1.6, 9.2.3 and 12.0.1 with a link to a campaign page. The Alerts tab (Figure 1.8, right) lists the behaviours its content analysis found in the latest, benign version: network access, debug access, environment-variable access, file-system access and URL strings, all marked &quot;supply chain risk&quot;. Socket is the closest analog in intent: by its own account it reacted to the incident within minutes [20]. It did so as a content scanner on the consumer&#39;s side, and the attribution to a campaign was curated afterwards. The purged versions themselves are no longer analysable.</p>
+<table class="figs"><tr><td><img src="file:///C:/_PAGES/ELS-JS/npm/documentation/ba/assets/analog-socket-overview.jpg" width="290" height="134" alt=""><br>Figure 1.8 (left) — Socket.dev page of node-ipc: campaign banner with the three malicious versions, score 99 for the latest version</td><td><img src="file:///C:/_PAGES/ELS-JS/npm/documentation/ba/assets/analog-socket-alerts.jpg" width="290" height="134" alt=""><br>Figure 1.8 (right) — Socket.dev alerts for the latest benign version: behaviour findings from content analysis</td></tr></table><p>Table 1.1 compares the six solutions with the proposed system on eight criteria.</p>
+<p>Table 1.1 — Comparison of analogs</p>
+<table>
+<thead>
+<tr>
+<th>Criterion</th>
+<th>npm audit</th>
+<th>GuardDog</th>
+<th>Snyk Advisor</th>
+<th>deps.dev / Scorecard</th>
+<th>Aikido Intel + Safe Chain</th>
+<th>Socket.dev</th>
+<th>Proposed system</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Layer analysed</td>
+<td>advisory database</td>
+<td>package content</td>
+<td>advisories + curated metadata</td>
+<td>repository practices, dependency graph</td>
+<td>vendor&#39;s content scan; version age at install</td>
+<td>package content + some publisher signals</td>
+<td>publication metadata and history</td>
+</tr>
+<tr>
+<td>Moment of detection</td>
+<td>after an advisory exists</td>
+<td>on scan of a tarball</td>
+<td>after an advisory or curation</td>
+<td>periodic</td>
+<td>hours after publication; at install</td>
+<td>at install / pull request</td>
+<td>minutes after publication</td>
+</tr>
+<tr>
+<td>Covers a compromised publisher</td>
+<td>no</td>
+<td>no</td>
+<td>after curation</td>
+<td>no</td>
+<td>no (content and age only)</td>
+<td>partly (new-maintainer signal; campaign banner curated afterwards)</td>
+<td>yes (publisher vs. release history)</td>
+</tr>
+<tr>
+<td>Watches the whole registry continuously</td>
+<td>no</td>
+<td>no</td>
+<td>no</td>
+<td>no (periodic)</td>
+<td>vendor-side yes; consumer sees a list</td>
+<td>no (per consumer)</td>
+<td>yes (change feed)</td>
+</tr>
+<tr>
+<td>Explainable per-finding evidence</td>
+<td>advisory link</td>
+<td>rule and code line</td>
+<td>score components</td>
+<td>scorecard checks</td>
+<td>verdict label only</td>
+<td>alert reasons</td>
+<td>feature, value, threshold, weight</td>
+</tr>
+<tr>
+<td>Evidence kept after the registry purges a version</td>
+<td>no</td>
+<td>no</td>
+<td>note only</td>
+<td>no</td>
+<td>listing only</td>
+<td>banner only; versions not analysable</td>
+<td>yes (snapshot at observation)</td>
+</tr>
+<tr>
+<td>Licence and cost</td>
+<td>open source, free</td>
+<td>open source, free</td>
+<td>commercial, free tier</td>
+<td>open data, free</td>
+<td>feed free to read; Safe Chain open source</td>
+<td>commercial, free tier</td>
+<td>open source</td>
+</tr>
+<tr>
+<td>API and automation</td>
+<td>CLI, JSON</td>
+<td>CLI, JSON</td>
+<td>web, API on paid tiers</td>
+<td>REST API</td>
+<td>CLI wrapper; feed on the web</td>
+<td>CLI, GitHub app, API</td>
+<td>REST, WebSocket, OpenAPI</td>
+</tr>
+</tbody></table>
+<p><strong>What is missing.</strong> All six analogs are either <em>reactive</em> (they need an advisory, a curated note or the vendor&#39;s own detection list) or <em>content-based</em> (they need the tarball, which the attacker controls and the registry later removes). The fastest of them, Aikido Intel, reports hours after the publication and gives the consumer a label, not the evidence. None of them watches the registry&#39;s publication stream for the consumer continuously, none reasons about the <em>history</em> of a package — who published the previous versions, how often, into which lines — and none keeps evidence of a publication once the registry purges it. The compromised-publisher class [12], the dominant class of 2026 [1], [4], falls between them. These three gaps define the proposed system.</p>
+<h2>1.4 Chapter conclusions</h2>
+<p>The analysis identified six problems. Each is linked to an epic of the backlog (Appendix A) or to a KPI of Section 2.1.</p>
+<p>Table 1.2 — Problems identified and what the solution must do</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Problem</th>
+<th>What the new solution must be able to do</th>
+<th>Linked epic / KPI</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>P1</td>
+<td>Nobody watches the registry&#39;s publication stream continuously; consumers react only after an advisory</td>
+<td>read the change feed without loss across restarts and outages</td>
+<td>E1 Durable collection; KPI-1 continuous operation</td>
+</tr>
+<tr>
+<td>P2</td>
+<td>Enriching every event from external sources is impossible: 90 000–120 000 events a day against quotas of thousands of requests an hour</td>
+<td>score every event without network requests and pass only candidates to enrichment</td>
+<td>E2 Cheap filtering; KPI-2 pass-through, KPI-3 cost reduction</td>
+</tr>
+<tr>
+<td>P3</td>
+<td>The attack classes of 2026 are visible in publication metadata and package history, which no tool reasons about</td>
+<td>compare the publisher, the manifest, the release lines and the repository with the package&#39;s own history</td>
+<td>E3 Enrichment; KPI-4 recall on replayed incidents</td>
+</tr>
+<tr>
+<td>P4</td>
+<td>Verdicts of existing tools are opaque scores or binary advisories</td>
+<td>decompose every alert into named features with value, threshold and weight; let the analyst record a verdict</td>
+<td>E4 Explainable alerts; KPI-5 precision</td>
+</tr>
+<tr>
+<td>P5</td>
+<td>The registry purges malicious versions; evidence and datasets vanish</td>
+<td>store a snapshot of the package document at the moment of observation</td>
+<td>E3 Enrichment (evidence); E8 Evaluation</td>
+</tr>
+<tr>
+<td>P6</td>
+<td>No one measures the residual risk after the registry&#39;s content gate</td>
+<td>replay documented incidents on the recorded background and report recall, precision, delay and request reduction</td>
+<td>E8 Evaluation; KPI-4, KPI-5, KPI-6</td>
+</tr>
+</tbody></table>
+<p>In short, the new solution must be a continuous, metadata-first monitor of the npm registry with a cheap first stage, a budgeted second stage, explainable alerts, durable evidence and a reproducible evaluation. Chapter 2 turns these statements into requirements.</p>
+
+<h1>Chapter 2. System requirements</h1>
+<h2>2.1 Vision and goals</h2>
+<p><strong>Vision statement.</strong> For security engineers and maintainers who depend on the npm registry, the npm Publication Monitor is a continuous early-warning service that flags suspicious package publications minutes after they happen, before the code is analysed and before the registry removes the evidence. Unlike content scanners and vulnerability databases, which see malware only once it is recognised, the monitor works on publication metadata and package history, where a compromised publisher is visible and a valid attestation proves nothing.</p>
+<p><strong>Business goals.</strong> (G1) Reduce the window between a malicious publication and the first actionable signal from hours to minutes. (G2) Make the signal cheap enough to run over the whole registry on one node within the quotas of public APIs. (G3) Make every alert explainable and verifiable by an analyst. (G4) Keep evidence of every flagged publication after the registry purges it. (G5) Measure the residual risk after the registry&#39;s content gate with a reproducible method.</p>
+<p>Table 2.1 — Key performance indicators</p>
+<table>
+<thead>
+<tr>
+<th>KPI</th>
+<th>Goal</th>
+<th>Baseline (measured before design, Section 1.2)</th>
+<th>Target</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>KPI-1 Continuous operation</td>
+<td>G1, G2</td>
+<td>no continuous observer of the feed exists</td>
+<td>feed coverage ≥ 99 % of the observation period (sum of gaps longer than 5 minutes ≤ 1 %; every gap documented)</td>
+</tr>
+<tr>
+<td>KPI-2 Stage-1 pass-through</td>
+<td>G2</td>
+<td>100 % of events would need enrichment without a pre-filter</td>
+<td>≤ 3 % of events reach stage 2</td>
+</tr>
+<tr>
+<td>KPI-3 External requests per day</td>
+<td>G2</td>
+<td>≈ 380 000 requests a day to enrich every event (measured mean of 89 000 events a day × 4.2 requests per enriched event)</td>
+<td>≤ 15 000 requests a day; no source quota exhausted</td>
+</tr>
+<tr>
+<td>KPI-4 Recall on replayed incidents</td>
+<td>G1, G5</td>
+<td>no analog gives the consumer a signal with evidence before the vendor&#39;s advisory; both reference incidents were reported hours after the first publication [3], [20]</td>
+<td>an alert in every insertion of the two reference incidents (node-ipc, ChainDrop) and in at least two of the three held-out incidents (chalk/debug, Shai-Hulud, nx), replayed with parameters frozen beforehand</td>
+</tr>
+<tr>
+<td>KPI-5 Alerts per day</td>
+<td>G3</td>
+<td>≈ 250 alerts a day over the registry with the initial expert weights (first 64 h of background, before calibration)</td>
+<td>(a) over the registry, for the operator: ≤ 30, ≤ 10 after calibration; (b) for one consumer&#39;s dependency list of about 2 000 packages: ≤ 3, so that a 15-minute review fits (measured: 1.6 a day on the top-10 000 packages, 28 Oct–10 Nov)</td>
+</tr>
+<tr>
+<td>KPI-6 Detection delay</td>
+<td>G1</td>
+<td>hours (vendor advisory) to days (<code>npm audit</code> after the advisory database update)</td>
+<td>≤ 10 minutes from the first publication of a wave to the alert, on the reference and the held-out incidents</td>
+</tr>
+</tbody></table>
+<h2>2.2 Stakeholders and users</h2>
+<p>Table 2.2 lists the stakeholders with their interest, influence and involvement.</p>
+<p>Table 2.2 — Stakeholders, interest and influence</p>
+<table>
+<thead>
+<tr>
+<th>Role</th>
+<th>Interest</th>
+<th>Influence</th>
+<th>Involvement</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Supervisor</td>
+<td>scope and method fit a bachelor project; honest evaluation</td>
+<td>H</td>
+<td>approves deviations from the description; reviews chapters</td>
+</tr>
+<tr>
+<td>Reviewing expert and committee</td>
+<td>a working system, requirements that can be verified, a clear defence</td>
+<td>H</td>
+<td>reads this document; attends the defence</td>
+</tr>
+<tr>
+<td>Security analyst (primary user)</td>
+<td>early warning with enough evidence to decide in minutes</td>
+<td>M</td>
+<td>reviews alerts, records verdicts</td>
+</tr>
+<tr>
+<td>Package maintainer (secondary user)</td>
+<td>a signal that their package was published unexpectedly</td>
+<td>L</td>
+<td>searches a package, reads its version history</td>
+</tr>
+<tr>
+<td>Researcher / operator (the author)</td>
+<td>a recorded background, deterministic engines, reproducible replays</td>
+<td>H</td>
+<td>builds, calibrates, operates, evaluates</td>
+</tr>
+<tr>
+<td>External data providers (npm, ecosyste.ms, deps.dev, GitHub, RDAP)</td>
+<td>fair use within rate limits and terms</td>
+<td>M</td>
+<td>passive; protected by the quota layer</td>
+</tr>
+</tbody></table>
+<p><strong>System users (actors of the use cases).</strong> <em>Security analyst</em>, <em>Package maintainer</em>, <em>Researcher/operator</em> (drawn as two actors, researcher and operator, in the use case diagram, Figure B.3); and three system actors: the <em>npm registry</em> (change feed and package documents), the <em>external sources</em> (ecosyste.ms, deps.dev, GitHub, RDAP) and the <em>uptime check</em> that polls the health endpoint.</p>
+<p><strong>Personas.</strong> Composite personas from the document analysis and the supervisor sessions (no interviews, Section 2.8).</p>
+<p><em>Marta, application security engineer</em> at a 40-person company with 1 900 packages in the lock file. She has 15 minutes a day for supply-chain news and no budget for a commercial scanner. She wants only the alerts on the packages she depends on, enough evidence to decide in five minutes, and a way to mark what she has already checked: at most three decisions a day (KPI-5 b).</p>
+<p><em>Ilya, maintainer</em> of a library with 300 000 weekly downloads published only through GitHub Actions. He wants to be told that a human account published his package after months of CI-only releases, and to see the whole version history on one page when a user asks &quot;was this release yours?&quot;.</p>
+<h2>2.3 Project scope</h2>
+<p><strong>In scope.</strong> Continuous collection of the registry change feed with a persisted cursor; stage 1 — temporal, nominal and version lanes and a watchlist — without network requests; stage 2 — enrichment from five sources under quotas; weighted-sum scoring, evidence snapshots, maintainer-set history, analyst verdicts and a filter by a consumer&#39;s dependency list; a REST API with an OpenAPI 3.1 contract [35] and a WebSocket stream; a single-page dashboard usable on a phone; containerised deployment with health checks, central logs and an external uptime check; a privacy notice, retention periods and an exclusion list (Section 2.8); replay-based evaluation on the recorded background.</p>
+<p><strong>Out of scope.</strong> Analysis of package content (the layer the registry&#39;s gate already covers); machine learning (no labelled corpus, explainability is a requirement); comparison of the tarball with the source repository (high traffic cost for a signal that cheaper features approximate); dependency confusion (needs a second data source — corporate namespaces); blocking or quarantining packages (the system informs, it does not act on the registry).</p>
+<p>Table 2.3 lists the assumptions and constraints with their consequences for the design.</p>
+<p>Table 2.3 — Assumptions and constraints</p>
+<table>
+<thead>
+<tr>
+<th>Kind</th>
+<th>Statement</th>
+<th>Consequence</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Deadline</td>
+<td>the BA block by 30 October 2026, the full thesis by the programme&#39;s deadline; an observation period of weeks, not months</td>
+<td>evaluation uses replayed incidents on the recorded background, not a long-term incident count</td>
+</tr>
+<tr>
+<td>Resources</td>
+<td>one developer; one always-on home node; no hosting budget</td>
+<td>one container image, one database; hybrid cloud (ingress, logs, uptime check in managed services)</td>
+</tr>
+<tr>
+<td>Access to data</td>
+<td>the change feed and package documents are public; the feed event carries only the package name and a document revision</td>
+<td>version rules run on stage 2, where the package document is fetched</td>
+</tr>
+<tr>
+<td>External APIs</td>
+<td>GitHub 5 000 requests/h with a token, ecosyste.ms and deps.dev unmetered but rate-limited, RDAP per registry</td>
+<td>a token bucket per source; a skipped request is recorded on the event</td>
+</tr>
+<tr>
+<td>Assumption</td>
+<td>every publication produces at least one feed event; the <code>time</code> field keeps the dates of purged versions (verified on node-ipc and on the 2025 versions of nx, debug, chalk and @ctrl/tinycolor); incident write-ups give timings to the minute</td>
+<td>replay scenarios can be built from public write-ups and the registry&#39;s own dates</td>
+</tr>
+</tbody></table>
+<h2>2.4 Solution concept</h2>
+<p>The system is a pipeline of six processes around one PostgreSQL database (Figure 2.1; component view in Figure B.5). The <em>collector</em> polls the registry change feed every five seconds and writes each page of events together with the new cursor in one transaction; every event records the interval in which it can have appeared, so catch-up after downtime does not look like a burst. <em>Stage 1</em> scores every event from the journal alone: bursts per package, scope and name cluster against a 24-hour baseline, breadth of &quot;wake-ups&quot; of mature packages across unrelated namespaces, similarity of the name to the top-10 000 names, revision jumps and regressions, membership of the top-1 000 watchlist. An event becomes a candidate at a preliminary score of 2. <em>Stage 2</em> enriches candidates under per-source quotas and compares the publication with the package&#39;s own history: publisher against previous releases, maintainers and the age of the e-mail domain, lifecycle scripts, size and file count, dependencies, release lines, repository state. An alert needs a final score of 4 with at least 2 points of stage-2 evidence; a version or package the registry has already removed is a confirmation, not evidence, because nothing is left to show. The <em>web</em> process serves the REST API, a WebSocket stream of events and results, Swagger UI and the dashboard. The <em>popular</em> process refreshes the top-10 000 names daily; <em>migrate</em> applies schema migrations.</p>
+<p class="fig"><img src="file:///C:/_PAGES/ELS-JS/npm/documentation/ba/assets/context.png" width="400" height="233" alt=""></p><p class="cap">Figure 2.1 — Context diagram: users, the system and external systems (full size in Appendix B)</p><p>Table 2.4 — Alternatives considered and the rationale for the choice</p>
+<table>
+<thead>
+<tr>
+<th>Alternative</th>
+<th>How it would work</th>
+<th>Why it was not chosen</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>A. Content scanning of every new tarball</td>
+<td>download every published version, run GuardDog-style rules, alert on patterns</td>
+<td>duplicates the registry&#39;s gate, which the 2026 incidents passed; blind to a compromised publisher; 18–27 GB of traffic a day (Section 1.2)</td>
+</tr>
+<tr>
+<td>B. Polling a fixed list of important packages</td>
+<td>poll the package documents of the top-N packages and compare versions</td>
+<td>misses new packages, typosquats and worm propagation across namespaces; N = 10 000 at a 5-minute period costs ≈ 3 million requests a day</td>
+</tr>
+<tr>
+<td><strong>Chosen: metadata stream with two-stage filtering</strong></td>
+<td>read the change feed once, score every event from the journal, enrich 2–3 % of events under quotas, keep evidence</td>
+<td>covers the whole registry for one feed connection; metadata exposes the attack classes the gate misses; enrichment cost bounded by the pre-filter; every verdict explainable</td>
+</tr>
+</tbody></table>
+<h2>2.5 Functional requirements</h2>
+<p><strong>Epics.</strong> E1 Durable collection; E2 Cheap filtering (stage 1); E3 Enrichment and evidence (stage 2); E4 Explainable alerts and verdicts; E5 Dashboard and API; E6 Adaptive user interface; E7 Operations; E8 Evaluation by replay; E9 Calibration. Table 2.5 decomposes the epics into user stories with their MoSCoW priority; Appendix A gives every story in full with its acceptance criteria.</p>
+<p>Table 2.5 — Epics and user stories (MoSCoW)</p>
+<table>
+<thead>
+<tr>
+<th>Epic</th>
+<th>Priority</th>
+<th>User stories</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>E1 Durable collection</td>
+<td>Must</td>
+<td>US1.1 resume from the saved cursor (M); US1.2 appearance interval per event (M); US1.3 monthly partitions (S)</td>
+</tr>
+<tr>
+<td>E2 Cheap filtering</td>
+<td>Must</td>
+<td>US2.1 burst of a quiet package (M); US2.2 look-alike names (M); US2.3 top-1 000 always checked (M); US2.4 deterministic stage 1 without I/O (M); US2.5 wave across unrelated namespaces (S)</td>
+</tr>
+<tr>
+<td>E3 Enrichment and evidence</td>
+<td>Must</td>
+<td>US3.1 publisher vs release history (M); US3.2 manifest vs version before the burst (M); US3.3 hourly budget per source (M); US3.4 evidence snapshot (M); US3.5 e-mail domain age via RDAP (S)</td>
+</tr>
+<tr>
+<td>E4 Explainable alerts and verdicts</td>
+<td>Must</td>
+<td>US4.1 decomposed alert (M); US4.2 threshold with stage-2 evidence (M); US4.3 analyst verdict with a note (M); US4.4 repeats within six hours marked (S)</td>
+</tr>
+<tr>
+<td>E5 Dashboard and API</td>
+<td>Must</td>
+<td>US5.1 health and lag on one page (M); US5.2 smooth live feed (M); US5.3 filters (M); US5.4 hourly statistics (S); US5.5 OpenAPI and Swagger UI (M); US5.6 package page (S); US5.7 alerts for my dependency list (S)</td>
+</tr>
+<tr>
+<td>E6 Adaptive user interface</td>
+<td>Should</td>
+<td>US6.1 feed and card at phone width (S)</td>
+</tr>
+<tr>
+<td>E7 Operations</td>
+<td>Should</td>
+<td>US7.1 alert when the collector stops (S); US7.2 central logs (C); US7.3 retention and exclusion of personal data (S)</td>
+</tr>
+<tr>
+<td>E8 Evaluation by replay</td>
+<td>Must</td>
+<td>US8.1 scenarios inserted into the recorded background (M); US8.2 recall, precision, delay and request reduction per scenario (M)</td>
+</tr>
+<tr>
+<td>E9 Calibration</td>
+<td>Could</td>
+<td>US9.1 thresholds from background distributions (C)</td>
+</tr>
+</tbody></table>
+<p><strong>Acceptance criteria.</strong> Every Must story has acceptance criteria in Given/When/Then form in Appendix A; for example, US2.1: given a package with no publication in the last 24 hours, when three or more changes of it (by revision increment) arrive within 10 minutes with reliable timestamps, then the third event is a candidate with the feature <code>rate_package</code> and its value, within 60 seconds.</p>
+<p><strong>Mockups.</strong> Figures 2.2–2.4 show the layouts of the three key stories implemented in the prototype dashboard: the live feed (US5.2, US5.3), the overview with the funnel and the pipeline status (US5.1), and the event card with the decomposed score (US4.1, US4.3).</p>
+<table class="figs"><tr><td><img src="file:///C:/_PAGES/ELS-JS/npm/documentation/ba/assets/mock-feed.png" width="250" height="215" alt=""><br>Figure 2.2 — Live feed with filters, chips of fired features and in-place stage results (US5.2, US5.3)</td><td><img src="file:///C:/_PAGES/ELS-JS/npm/documentation/ba/assets/mock-overview.png" width="250" height="215" alt=""><br>Figure 2.3 — Overview: funnel of the last 24 hours, feed pulse and pipeline status (US5.1)</td></tr></table><p class="fig"><img src="file:///C:/_PAGES/ELS-JS/npm/documentation/ba/assets/mock-card.png" width="260" height="368" alt=""></p><p class="cap">Figure 2.4 — Event card: score composition, version timeline, feature table and analyst verdict (US4.1, US4.3)</p><p>Table 2.6 traces every goal to its KPIs, epics and stories.</p>
+<p>Table 2.6 — Traceability from goals to epics and stories</p>
+<table>
+<thead>
+<tr>
+<th>Goal</th>
+<th>KPI</th>
+<th>Epic</th>
+<th>Stories</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>G1 window from publication to signal</td>
+<td>KPI-1, KPI-4, KPI-6</td>
+<td>E1, E2, E4</td>
+<td>US1.1, US1.2, US2.1, US2.2, US2.3, US2.5, US4.2</td>
+</tr>
+<tr>
+<td>G2 whole registry within quotas</td>
+<td>KPI-2, KPI-3</td>
+<td>E2, E3, E5, E7</td>
+<td>US2.4, US3.3, US5.1, US7.1</td>
+</tr>
+<tr>
+<td>G3 explainable, verifiable alerts</td>
+<td>KPI-5</td>
+<td>E4, E5, E6</td>
+<td>US4.1, US4.3, US4.4, US5.2, US5.3, US5.5, US5.7, US6.1</td>
+</tr>
+<tr>
+<td>G4 durable evidence</td>
+<td>KPI-4</td>
+<td>E3, E5</td>
+<td>US3.1, US3.2, US3.4, US3.5, US5.6</td>
+</tr>
+<tr>
+<td>G5 measured residual risk</td>
+<td>KPI-4, KPI-5, KPI-6</td>
+<td>E5, E8, E9</td>
+<td>US8.1, US8.2, US9.1, US5.4</td>
+</tr>
+<tr>
+<td>Legal compliance (Section 2.8)</td>
+<td>—</td>
+<td>E7</td>
+<td>US7.3</td>
+</tr>
+</tbody></table>
+<h2>2.6 Use case scenarios</h2>
+<p>The use case diagram with all actors is Figure B.3 in Appendix B.</p>
+<p><strong>UC1 — Review an alert.</strong> <em>Actor:</em> security analyst. <em>Precondition:</em> the pipeline is running; an event has reached the alert threshold; the analyst has the analyst token. <em>Main flow:</em> (1) the analyst opens the Alerts list and sees the new alert with its package, versions, score and feature chips; (2) the analyst opens the event card; (3) the card shows the score composition, the version timeline with the publisher of every version, the feature table with values and thresholds, the comparison with the previous version, the answers of each source and the evidence snapshot; (4) the analyst checks the package on the registry and the repository; (5) the analyst records the verdict <em>confirmed</em> with a note; (6) the system stores the verdict and shows it on the card and in the lists. <em>Alternative flow A1 (false positive):</em> at step 5 the analyst records <em>false positive</em>; the verdict is stored; later alerts for the same package remain visible but the analyst sees the earlier verdict on the package page. <em>Alternative flow A2 (source skipped):</em> at step 3 one source shows &quot;skipped: quota&quot;; the analyst decides from the remaining evidence or waits for the quota window; the skip is recorded on the event. <em>Alternative flow A3 (no token):</em> at step 5 the request is refused; the card asks for the token.</p>
+<p><strong>UC2 — Check an unexpected release of own package.</strong> <em>Actor:</em> package maintainer. <em>Precondition:</em> the maintainer has the package name. <em>Main flow:</em> (1) the maintainer types the name into the search box; (2) the package page lists every journal event of the package with chips, scores and verdicts, and the history of the maintainer set; (3) the maintainer opens the latest event; (4) the timeline shows that the last version was published by an account different from the previous releases, with the feature <code>publisher_new</code>; (5) the maintainer revokes the token on the registry and notifies users. <em>Alternative flow A1 (no events):</em> at step 2 the page states that the package has no events in the observation period. <em>Alternative flow A2 (benign release):</em> at step 4 the publisher matches the history and no stage-2 feature fired; the maintainer closes the page.</p>
+<p>The system sequence diagram of UC1 (Figure B.4 in Appendix B) starts when the registry publishes a version: the collector stores the event, stage 1 scores it, stage 2 enriches it and stores the evidence, the web process pushes the result to the open dashboard over the WebSocket, and the analyst records the verdict.</p>
+<h2>2.7 Non-functional requirements</h2>
+<p>Table 2.7 states the non-functional requirements with measurable indicators.</p>
+<p>Table 2.7 — Non-functional requirements with measurable indicators</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Area</th>
+<th>Requirement</th>
+<th>Indicator and value</th>
+<th>Linked KPI / story</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>NFR-1</td>
+<td>Durability</td>
+<td>no event lost or duplicated across restarts and outages</td>
+<td>cursor and events written in one transaction; idempotent inserts; a restart test shows the same event count as the feed</td>
+<td>KPI-1, US1.1</td>
+</tr>
+<tr>
+<td>NFR-2</td>
+<td>Performance</td>
+<td>stage 1 keeps up with the feed with a margin</td>
+<td>stage 1 sustains ≥ 1 000 events/s on the target node (&gt; 700× the measured 1.4 events/s); a batch of 1 000 journal events is scored in ≤ 1 s</td>
+<td>KPI-2, US2.4</td>
+</tr>
+<tr>
+<td>NFR-3</td>
+<td>Latency</td>
+<td>an alert is visible soon after the publication</td>
+<td>≤ 10 minutes from the first event of a wave to the alert on the dashboard (settle time 60 s included)</td>
+<td>KPI-6, US4.2</td>
+</tr>
+<tr>
+<td>NFR-4</td>
+<td>Availability</td>
+<td>unattended operation with automatic recovery</td>
+<td>processes restart after a reboot (<code>restart: unless-stopped</code>); health endpoint returns 503 when the collector is silent for 5 minutes; an external check polls it every minute</td>
+<td>KPI-1, US5.1, US7.1</td>
+</tr>
+<tr>
+<td>NFR-5</td>
+<td>Capacity</td>
+<td>the journal holds the whole observation period</td>
+<td>90 000–120 000 events a day for 90 days (≈ 11 million rows) in monthly partitions [36]; results stored only for hits</td>
+<td>US1.3</td>
+</tr>
+<tr>
+<td>NFR-6</td>
+<td>Security</td>
+<td>read access for analysts only, one authenticated write</td>
+<td>the dashboard and the API are reachable only inside the deployment&#39;s private network or after authentication; the only write endpoint requires a bearer token; no secrets in the repository; parameterised SQL; a strict Content-Security-Policy</td>
+<td>US4.3, US5.5, US7.3</td>
+</tr>
+<tr>
+<td>NFR-7</td>
+<td>Usability</td>
+<td>an alert can be assessed without leaving the card</td>
+<td>all features, values, thresholds, source answers and evidence on one page; ≤ 3 clicks from the alert list to a recorded verdict</td>
+<td>KPI-5, US4.1, US4.3</td>
+</tr>
+<tr>
+<td>NFR-8</td>
+<td>Accessibility</td>
+<td>the dashboard is usable on a phone and with a keyboard</td>
+<td>feed and card functional at 390 px; every control a real button, link or input with a visible focus ring; alert state never by colour alone; contrast ≥ 4.5:1 for text</td>
+<td>US6.1</td>
+</tr>
+<tr>
+<td>NFR-9</td>
+<td>Fair use</td>
+<td>external sources are used within their terms</td>
+<td>a token bucket per source with the published limits; an identifying <code>User-Agent</code>; skipped requests counted hourly</td>
+<td>KPI-3, US3.3</td>
+</tr>
+<tr>
+<td>NFR-10</td>
+<td>Reproducibility</td>
+<td>the evaluation can be repeated by a third party</td>
+<td>deterministic engines; a replay tool with a fixed seed; parameter sets identified by a hash stored with every result</td>
+<td>KPI-4, US2.4, US8.2</td>
+</tr>
+</tbody></table>
+<h2>2.8 Legal and ethical requirements</h2>
+<p><strong>Personal data.</strong> The system processes only data that the registry publishes openly: package names, version numbers, timestamps, publisher user names and the e-mail addresses attached to versions and maintainers. User names and e-mail addresses are personal data under the GDPR [28]. The processing is not neutral: an alert attaches an automatic label to a named account, and before calibration most of about 250 alerts a day were false.</p>
+<p><strong>Legal basis and balancing test.</strong> Legitimate interest, Article 6(1)(f), assessed in three steps. <em>Purpose:</em> early detection of compromised publications protects the users of the ecosystem and the maintainers, whose accounts are the ones stolen. <em>Necessity:</em> the publisher of a version is the main signal of a compromised account (Section 1.3), and no less intrusive data carries it. <em>Balancing:</em> the data is public and published in a professional role, but a false label can harm a reputation; the measures below limit that risk.</p>
+<p><strong>Measures.</strong> <em>Access:</em> the dashboard and the API are open only to the analysts of the deployment; no public page shows alerts with account names, and a public demonstration shows them pseudonymised. <em>Wording:</em> an alert is a signal for review with its evidence, never a statement that an account is malicious; a <em>false positive</em> verdict is shown with every later alert of the package. <em>Minimisation:</em> an e-mail address is used only to derive the domain for the RDAP look-up and is never shown or sent to a third party. <em>Retention:</em> snapshots of candidates without an alert are deleted after 30 days; alerts, their snapshots and verdicts are deleted six months after the defence; the journal holds package names only. <em>Transparency, Article 14:</em> the data is not collected from the subjects and informing each of them would take disproportionate effort, so Article 14(5)(b) applies; a public privacy notice in the repository and on the dashboard states the purpose, the data, the legal basis, the retention and a contact. <em>Right to object, Article 21:</em> on request an account goes on an exclusion list; its name is removed from stored snapshots and is no longer stored, unless a confirmed incident gives compelling grounds (Article 21(1)). The deployment is not commercial.</p>
+<p><strong>Participants.</strong> No interviews or surveys were held, so no consent forms were needed. Analysts outside the project who record verdicts in a later phase will be informed that their verdicts are stored with a timestamp and used in the evaluation.</p>
+<p><strong>Licences.</strong> The project&#39;s code is published under the MIT licence; its runtime dependencies are permissive (Preact, ws, Node.js — MIT; htm, swagger-ui-dist — Apache-2.0; postgres.js — Unlicense; PostgreSQL — PostgreSQL licence). External data sources are used within their published terms and rate limits [5], [24]–[27], the registry data for non-commercial analysis.</p>
+<p><strong>Industry standards.</strong> The dashboard follows WCAG 2.1 level AA [29] where it applies to a data-dense tool: contrast ≥ 4.5:1 in both colour schemes, keyboard operability with a visible focus indicator, ARIA attributes for the live regions, status never by colour alone. Secure development follows the NIST SP 800-218 [9] practices that fit a one-person project: pinned dependencies, no secrets in the repository, reviewed changes, automated tests.</p>
+<h2>2.9 Risks</h2>
+<p>Table 2.8 lists the project risks with probability, impact and mitigation.</p>
+<p>Table 2.8 — Project risks</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Risk</th>
+<th>Probability</th>
+<th>Impact</th>
+<th>Mitigation</th>
+<th>Dependency</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>R1</td>
+<td>The registry changes the change-feed API or rate-limits it</td>
+<td>L</td>
+<td>H</td>
+<td>the collector validates every page and stops on a malformed response; the cursor allows resumption from any point; a second feed source (npm-replicate mirror) is documented</td>
+<td>npm registry</td>
+</tr>
+<tr>
+<td>R2</td>
+<td>Too few real incidents in the observation period to evaluate recall</td>
+<td>H</td>
+<td>M</td>
+<td>replay of documented incidents on the recorded background, three of them held out; deferred confirmation against vulnerability databases</td>
+<td>public write-ups</td>
+</tr>
+<tr>
+<td>R3</td>
+<td>Expert thresholds produce too many alerts for one analyst</td>
+<td>H</td>
+<td>M</td>
+<td>calibration on the recorded background by replaying rule sets on stored results; every parameter set is identified and stored with the result</td>
+<td>none</td>
+</tr>
+<tr>
+<td>R4</td>
+<td>External API quotas are exhausted during a wave</td>
+<td>M</td>
+<td>M</td>
+<td>a token bucket per source; candidates prioritised (watchlist first); skipped requests recorded and shown as gaps, not as absence of evidence</td>
+<td>GitHub, ecosyste.ms, deps.dev, RDAP</td>
+</tr>
+<tr>
+<td>R5</td>
+<td>The single home node fails or loses connectivity</td>
+<td>M</td>
+<td>H</td>
+<td>nightly database dump; automatic restart; external uptime check with e-mail; the stack deploys unchanged to any VM</td>
+<td>home network, power</td>
+</tr>
+<tr>
+<td>R6</td>
+<td>The registry purges a version before stage 2 fetches it</td>
+<td>M</td>
+<td>L</td>
+<td>the <code>time</code> field keeps the dates; the result records the purge as a feature; the feed interval limits the delay to about a minute</td>
+<td>npm registry</td>
+</tr>
+<tr>
+<td>R7</td>
+<td>Time: the BA block and the implementation compete for the same weeks</td>
+<td>M</td>
+<td>M</td>
+<td>the BA document reuses the measurements and diagrams of the design; strict section order from the programme&#39;s template</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<h2>2.10 Chapter conclusions</h2>
+<p>The specification fixes five business goals with six KPIs (Section 2.1), six stakeholder roles and two personas (2.2), the scope (2.3), the solution concept with two rejected alternatives (2.4), nine epics with 31 user stories and acceptance criteria (2.5), two use cases (2.6), ten non-functional requirements (2.7), the legal basis with retention periods (2.8) and seven risks (2.9).</p>
+<p>The result will be verified against the KPIs of Table 2.1: KPI-1 from the journal (gaps longer than five minutes); KPI-2 and KPI-3 from the hourly counts of candidates and source requests over full days; KPI-4 and KPI-6 by replaying the two reference and the three held-out incidents on the recorded background with ten random insertions each, the parameters frozen before the held-out runs; KPI-5 (a) from the count of alerts on the benign background and the analyst verdicts recorded on them, KPI-5 (b) from the alerts on a test list of the 2 000 most popular packages. Each Must story is accepted by its Given/When/Then criteria: automated tests where the criterion is deterministic, a documented manual check where it needs the live registry.</p>
+
+<h1>References</h1>
+<p>[1] Sonatype Research Team, &quot;Q2 2026 Open Source Malware Index: Attackers Abuse Developer Trust,&quot; Sonatype blog, Jul. 9, 2026. [Online]. Available: <a href="https://www.sonatype.com/blog/q2-2026-open-source-malware-index-attackers-abuse-developer-trust">https://www.sonatype.com/blog/q2-2026-open-source-malware-index-attackers-abuse-developer-trust</a></p>
+<p>[2] GitHub, Inc., &quot;npm publish-time malware scanning and dual-use metadata,&quot; GitHub Changelog, Jul. 28, 2026. [Online]. Available: <a href="https://github.blog/changelog/2026-07-28-npm-publish-time-malware-scanning-and-dual-use-metadata/">https://github.blog/changelog/2026-07-28-npm-publish-time-malware-scanning-and-dual-use-metadata/</a></p>
+<p>[3] I. Makari, &quot;Keyv and friends compromised in active Shai-Hulud supply chain attack,&quot; Aikido Security blog, Aug. 4, 2026, updated Aug. 5, 2026. [Online]. Available: <a href="https://www.aikido.dev/blog/keyv-and-friends-compromised-in-npm-supply-chain-attack">https://www.aikido.dev/blog/keyv-and-friends-compromised-in-npm-supply-chain-attack</a></p>
+<p>[4] S. Likhith, &quot;ChainDrop npm Worm: Bun-loaded CI/CD credential harvester with Ethereum dead-drop C2,&quot; StepSecurity blog, Aug. 4, 2026. [Online]. Available: <a href="https://www.stepsecurity.io/blog/chaindrop-npm-worm">https://www.stepsecurity.io/blog/chaindrop-npm-worm</a></p>
+<p>[5] npm, Inc., &quot;Registry API: Changes Feed and Package Documents.&quot; [Online]. Available: <a href="https://github.com/npm/registry/blob/main/docs/REGISTRY-API.md">https://github.com/npm/registry/blob/main/docs/REGISTRY-API.md</a> (accessed Oct. 14, 2026).</p>
+<p>[6] N. Frichette, &quot;Backdoored node-ipc npm releases steal developer credentials through DNS queries,&quot; Datadog Security Labs, May 14, 2026. [Online]. Available: <a href="https://securitylabs.datadoghq.com/articles/node-ipc-npm-malware-analysis/">https://securitylabs.datadoghq.com/articles/node-ipc-npm-malware-analysis/</a></p>
+<p>[7] npm, Inc., &quot;Generating Provenance Statements.&quot; [Online]. Available: <a href="https://docs.npmjs.com/generating-provenance-statements">https://docs.npmjs.com/generating-provenance-statements</a> (accessed Oct. 14, 2026).</p>
+<p>[8] Open Source Security Foundation, &quot;SLSA Provenance Specification v1.0.&quot; [Online]. Available: <a href="https://slsa.dev/spec/v1.0/provenance">https://slsa.dev/spec/v1.0/provenance</a> (accessed Oct. 14, 2026).</p>
+<p>[9] M. Souppaya, K. Scarfone, and D. Dodson, <em>Secure Software Development Framework (SSDF) Version 1.1: Recommendations for Mitigating the Risk of Software Vulnerabilities</em>, NIST Special Publication 800-218, Feb. 2022, doi: 10.6028/NIST.SP.800-218.</p>
+<p>[10] npm, Inc., &quot;npm-audit: Run a Security Audit.&quot; [Online]. Available: <a href="https://docs.npmjs.com/cli/v11/commands/npm-audit">https://docs.npmjs.com/cli/v11/commands/npm-audit</a> (accessed Oct. 28, 2026).</p>
+<p>[11] M. Ohm, H. Plate, A. Sykosch, and M. Meier, &quot;Backstabber&#39;s Knife Collection: A Review of Open Source Software Supply Chain Attacks,&quot; in <em>Detection of Intrusions and Malware, and Vulnerability Assessment (DIMVA 2020)</em>, LNCS vol. 12223, Springer, 2020, pp. 23–43, doi: 10.1007/978-3-030-52683-2_2.</p>
+<p>[12] P. Ladisa, H. Plate, M. Martinez, and O. Barais, &quot;SoK: Taxonomy of Attacks on Open-Source Software Supply Chains,&quot; in <em>Proc. IEEE Symposium on Security and Privacy (S&amp;P)</em>, 2023, pp. 1509–1526, doi: 10.1109/SP46215.2023.10179304.</p>
+<p>[13] M. Zimmermann, C.-A. Staicu, C. Tenny, and M. Pradel, &quot;Small World with High Risks: A Study of Security Threats in the npm Ecosystem,&quot; in <em>Proc. 28th USENIX Security Symposium</em>, Santa Clara, CA, USA, 2019, pp. 995–1010. [Online]. Available: <a href="https://www.usenix.org/conference/usenixsecurity19/presentation/zimmerman">https://www.usenix.org/conference/usenixsecurity19/presentation/zimmerman</a></p>
+<p>[14] R. Duan, O. Alrawi, R. P. Kasturi, R. Elder, B. Saltaformaggio, and W. Lee, &quot;Towards Measuring Supply Chain Attacks on Package Managers for Interpreted Languages,&quot; in <em>Proc. Network and Distributed System Security Symposium (NDSS)</em>, 2021. [Online]. Available: <a href="https://www.ndss-symposium.org/ndss-paper/towards-measuring-supply-chain-attacks-on-package-managers-for-interpreted-languages/">https://www.ndss-symposium.org/ndss-paper/towards-measuring-supply-chain-attacks-on-package-managers-for-interpreted-languages/</a></p>
+<p>[15] N. Zahan, T. Zimmermann, P. Godefroid, B. Murphy, C. Maddila, and L. Williams, &quot;What are Weak Links in the npm Supply Chain?,&quot; in <em>Proc. 44th Int. Conf. on Software Engineering: Software Engineering in Practice (ICSE-SEIP)</em>, 2022, pp. 331–340, doi: 10.1145/3510457.3513044.</p>
+<p>[16] A. Sejfia and M. Schäfer, &quot;Practical Automated Detection of Malicious npm Packages,&quot; in <em>Proc. 44th Int. Conf. on Software Engineering (ICSE)</em>, 2022, pp. 1681–1692, doi: 10.1145/3510003.3510104.</p>
+<p>[17] D.-L. Vu, F. Massacci, I. Pashchenko, H. Plate, and A. Sabetta, &quot;LastPyMile: Identifying the Discrepancy between Sources and Packages,&quot; in <em>Proc. 29th ACM Joint European Software Engineering Conf. and Symp. on the Foundations of Software Engineering (ESEC/FSE)</em>, 2021, pp. 780–792, doi: 10.1145/3468264.3468592.</p>
+<p>[18] M. Taylor, R. K. Vaidya, D. Davidson, L. De Carli, and V. Rastogi, &quot;Defending Against Package Typosquatting,&quot; in <em>Network and System Security (NSS 2020)</em>, LNCS vol. 12570, Springer, 2020, pp. 112–131, doi: 10.1007/978-3-030-65745-1_7.</p>
+<p>[19] Unit 42, &quot;ChainDrop: Inside a Self-Propagating npm Worm,&quot; Palo Alto Networks, Aug. 6, 2026. [Online]. Available: <a href="https://unit42.paloaltonetworks.com/chaindrop-npm-worm-analysis/">https://unit42.paloaltonetworks.com/chaindrop-npm-worm-analysis/</a></p>
+<p>[20] Socket Research Team, &quot;Popular node-ipc npm Package Infected with Credential Stealer,&quot; Socket blog, May 14, 2026. [Online]. Available: <a href="https://socket.dev/blog/node-ipc-package-compromised">https://socket.dev/blog/node-ipc-package-compromised</a></p>
+<p>[21] V. Sharma, &quot;20+ Popular NPM Packages Compromised (Chalk, Debug, Strip-ANSI, Color-Convert, Wrap-ANSI...),&quot; StepSecurity blog, Sep. 8, 2025. [Online]. Available: <a href="https://www.stepsecurity.io/blog/20-popular-npm-packages-compromised-chalk-debug-strip-ansi-color-convert-wrap-ansi">https://www.stepsecurity.io/blog/20-popular-npm-packages-compromised-chalk-debug-strip-ansi-color-convert-wrap-ansi</a></p>
+<p>[22] A. Kurmi, &quot;Shai-Hulud: Self-Replicating Worm Compromises 500+ NPM Packages,&quot; StepSecurity blog, Sep. 15, 2025. [Online]. Available: <a href="https://www.stepsecurity.io/blog/ctrl-tinycolor-and-40-npm-packages-compromised">https://www.stepsecurity.io/blog/ctrl-tinycolor-and-40-npm-packages-compromised</a></p>
+<p>[23] J. Strumpflohner, &quot;S1ngularity — What Happened, How We Responded, What We Learned,&quot; Nx blog, Sep. 5, 2025. [Online]. Available: <a href="https://nx.dev/blog/s1ngularity-postmortem">https://nx.dev/blog/s1ngularity-postmortem</a></p>
+<p>[24] Google LLC, &quot;deps.dev API v3 Reference.&quot; [Online]. Available: <a href="https://docs.deps.dev/api/v3/">https://docs.deps.dev/api/v3/</a> (accessed Oct. 14, 2026).</p>
+<p>[25] Ecosyste.ms, &quot;Packages API Documentation.&quot; [Online]. Available: <a href="https://packages.ecosyste.ms/docs">https://packages.ecosyste.ms/docs</a> (accessed Oct. 14, 2026).</p>
+<p>[26] S. Hollenbeck and A. Newton, Eds., &quot;JSON Responses for the Registration Data Access Protocol (RDAP),&quot; RFC 9083, IETF, Jun. 2021. [Online]. Available: <a href="https://www.rfc-editor.org/rfc/rfc9083">https://www.rfc-editor.org/rfc/rfc9083</a></p>
+<p>[27] GitHub, Inc., &quot;REST API Documentation: Rate Limits.&quot; [Online]. Available: <a href="https://docs.github.com/en/rest/using-the-rest-api/rate-limit">https://docs.github.com/en/rest/using-the-rest-api/rate-limit</a> (accessed Oct. 14, 2026).</p>
+<p>[28] European Parliament and Council, &quot;Regulation (EU) 2016/679 (General Data Protection Regulation),&quot; <em>Official Journal of the European Union</em>, L 119, Apr. 2016.</p>
+<p>[29] W3C, &quot;Web Content Accessibility Guidelines (WCAG) 2.1,&quot; W3C Recommendation, Jun. 2018. [Online]. Available: <a href="https://www.w3.org/TR/WCAG21/">https://www.w3.org/TR/WCAG21/</a></p>
+<p>[30] Datadog, Inc., &quot;GuardDog: Identify Malicious PyPI and npm Packages.&quot; [Online]. Available: <a href="https://github.com/DataDog/guarddog">https://github.com/DataDog/guarddog</a> (accessed Oct. 28, 2026).</p>
+<p>[31] Snyk Ltd., &quot;Snyk Advisor.&quot; [Online]. Available: <a href="https://snyk.io/advisor/">https://snyk.io/advisor/</a> (accessed Oct. 28, 2026).</p>
+<p>[32] Aikido Security, &quot;Aikido Intel: Real-Time Supply Chain Intelligence Feed.&quot; [Online]. Available: <a href="https://intel.aikido.dev/">https://intel.aikido.dev/</a> (accessed Oct. 28, 2026).</p>
+<p>[33] Aikido Security, &quot;Aikido Safe Chain: Protect Against Malicious Packages Installed via npm, yarn, pnpm, npx, pip, uv and poetry.&quot; [Online]. Available: <a href="https://github.com/AikidoSec/safe-chain">https://github.com/AikidoSec/safe-chain</a> (accessed Oct. 28, 2026).</p>
+<p>[34] Socket, Inc., &quot;Socket for npm.&quot; [Online]. Available: <a href="https://socket.dev/">https://socket.dev/</a> (accessed Oct. 28, 2026).</p>
+<p>[35] OpenAPI Initiative, &quot;OpenAPI Specification v3.1.0,&quot; Feb. 2021. [Online]. Available: <a href="https://spec.openapis.org/oas/v3.1.0">https://spec.openapis.org/oas/v3.1.0</a></p>
+<p>[36] PostgreSQL Global Development Group, &quot;PostgreSQL 18 Documentation: Table Partitioning.&quot; [Online]. Available: <a href="https://www.postgresql.org/docs/18/ddl-partitioning.html">https://www.postgresql.org/docs/18/ddl-partitioning.html</a> (accessed Oct. 14, 2026).</p>
+
+<h1>Appendix A. Backlog</h1>
+<p>The table lists every epic and user story of Section 2.5 with its acceptance criteria and MoSCoW priority. Acceptance criteria are written in Given/When/Then form for Must and Should stories; Could stories carry a one-line criterion.</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Statement</th>
+<th>Acceptance criteria</th>
+<th>MoSCoW</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>E1</strong></td>
+<td><strong>Durable collection</strong> of the registry change feed</td>
+<td>—</td>
+<td>Must</td>
+</tr>
+<tr>
+<td>US1.1</td>
+<td>As an operator I want the collector to resume from its saved cursor after a restart, so that no publication is lost or counted twice.</td>
+<td>Given a running collector with cursor N, when the process is killed and started again, then it continues from N; the journal holds every event once and the event count equals the feed&#39;s count for the period.</td>
+<td>Must</td>
+</tr>
+<tr>
+<td>US1.2</td>
+<td>As a researcher I want every event stored with the interval in which it appeared, so that catch-up after downtime does not look like a burst.</td>
+<td>Given the collector was down for 30 minutes, when it catches up, then every event of the gap carries an interval of 30 minutes and stage 1 excludes it from the temporal lane.</td>
+<td>Must</td>
+</tr>
+<tr>
+<td>US1.3</td>
+<td>As an operator I want the journal partitioned by month, so that months of events stay queryable and prunable.</td>
+<td>Given a new month begins, when the collector runs, then the partition for the next month exists before its first event; events of a month can be detached as one partition.</td>
+<td>Should</td>
+</tr>
+<tr>
+<td><strong>E2</strong></td>
+<td><strong>Cheap filtering</strong> without network requests (stage 1)</td>
+<td>—</td>
+<td>Must</td>
+</tr>
+<tr>
+<td>US2.1</td>
+<td>As an analyst I want a burst of publications of a quiet package flagged within a minute, so that I see a hijacked package before the advisory.</td>
+<td>Given a package with no publication in the last 24 hours, when three or more changes of it (by revision increment) arrive within 10 minutes with reliable timestamps, then the third event is a candidate with the feature <code>rate_package</code> and its value, within 60 seconds.</td>
+<td>Must</td>
+</tr>
+<tr>
+<td>US2.2</td>
+<td>As an analyst I want names that look like popular packages flagged on first publication, so that typosquats are visible without reading code.</td>
+<td>Given a new package whose name is within one edit, a transposition, a homoglyph or a scope typo of a top-10 000 name, when its first event arrives, then stage 1 adds the nominal feature naming the target package.</td>
+<td>Must</td>
+</tr>
+<tr>
+<td>US2.3</td>
+<td>As an analyst I want every publication of a top-1 000 package checked by stage 2, so that the most consequential packages are never skipped.</td>
+<td>Given a package in the top-1 000 by downloads, when any event of it arrives, then it is a candidate regardless of its score, with the feature <code>watchlist</code>.</td>
+<td>Must</td>
+</tr>
+<tr>
+<td>US2.4</td>
+<td>As a researcher I want stage 1 deterministic and free of network I/O, so that a replay of the journal reproduces production.</td>
+<td>Given the journal and the parameter set, when the replay tool scores the journal, then the feature sets equal the stored production results for the same parameters.</td>
+<td>Must</td>
+</tr>
+<tr>
+<td>US2.5</td>
+<td>As an analyst I want a wave of mature packages waking up across unrelated namespaces flagged, so that worm propagation is visible.</td>
+<td>Given the count of distinct namespaces with a mature package&#39;s first publication in 24 hours exceeds its baseline by four standard deviations within 10 minutes, when such an event arrives, then it carries the feature <code>breadth_mature</code>.</td>
+<td>Should</td>
+</tr>
+<tr>
+<td><strong>E3</strong></td>
+<td><strong>Enrichment and evidence</strong> (stage 2)</td>
+<td>—</td>
+<td>Must</td>
+</tr>
+<tr>
+<td>US3.1</td>
+<td>As an analyst I want the publisher of a version compared with the release history, so that a new or returning account is a named feature.</td>
+<td>Given a package with at least three earlier versions, when a version is published by an account that published none of them, then the result carries <code>publisher_new</code>; a return after a year by a former publisher carries <code>publisher_returned</code>.</td>
+<td>Must</td>
+</tr>
+<tr>
+<td>US3.2</td>
+<td>As an analyst I want scripts, size, file count, dependencies and repository compared with the version before the burst, so that manifest changes of a wave are visible on every event of it.</td>
+<td>Given a burst of versions within 10 minutes, when any event of the burst is enriched, then the comparison baseline is the last version published before the burst, and an added install script yields <code>install_script_added</code> with its command.</td>
+<td>Must</td>
+</tr>
+<tr>
+<td>US3.3</td>
+<td>As an operator I want an hourly budget per external source with skipped requests recorded, so that quotas are never exceeded.</td>
+<td>Given a source&#39;s hourly budget is exhausted, when a candidate needs that source, then the request is not sent, the event records &quot;skipped: quota&quot; for that source, and the hourly table counts the skip.</td>
+<td>Must</td>
+</tr>
+<tr>
+<td>US3.4</td>
+<td>As an analyst I want a snapshot of the package document stored at enrichment, so that evidence survives the registry&#39;s purge.</td>
+<td>Given a candidate whose package document is fetched, when stage 2 stores its result, then the snapshot holds the versions, their times and the manifests attributed to the event, and the card serves it after the registry removes the versions.</td>
+<td>Must</td>
+</tr>
+<tr>
+<td>US3.5</td>
+<td>As an analyst I want the publisher&#39;s e-mail domain age checked through RDAP, so that a fresh domain is a feature while the address is never exposed.</td>
+<td>Given a publisher with a custom e-mail domain, when the candidate is enriched, then RDAP is queried for the domain only, the answer is cached for 30 days, and a registration younger than 180 days yields <code>email_domain_young</code>.</td>
+<td>Should</td>
+</tr>
+<tr>
+<td><strong>E4</strong></td>
+<td><strong>Explainable alerts and verdicts</strong></td>
+<td>—</td>
+<td>Must</td>
+</tr>
+<tr>
+<td>US4.1</td>
+<td>As an analyst I want every alert decomposed into features with value, threshold and weight, so that I can check the verdict by hand.</td>
+<td>Given an alert, when its card is opened, then every fired feature is listed with its lane, measured value, threshold and weight, and the weights sum to the final score.</td>
+<td>Must</td>
+</tr>
+<tr>
+<td>US4.2</td>
+<td>As an analyst I want an alert only when the final score reaches the threshold with stage-2 evidence, so that a stage-1 burst alone does not page me.</td>
+<td>Given a candidate, when its final score is at least 4 and its stage-2 features weigh at least 2 (features that only confirm a removal do not count) and the package still exists in the registry, then it is an alert; otherwise it is not.</td>
+<td>Must</td>
+</tr>
+<tr>
+<td>US4.3</td>
+<td>As an analyst I want to record a verdict with a note, so that verdicts become the ground truth for evaluation.</td>
+<td>Given an analyst with the token, when they submit confirmed, false positive or undecided for an event, then the verdict with time and note is stored, shown on the card and lists and returned by the findings endpoint; without the token the request is refused with 401.</td>
+<td>Must</td>
+</tr>
+<tr>
+<td>US4.4</td>
+<td>As an analyst I want repeated alerts for one package within six hours marked as repeats, so that a republishing pipeline does not flood the list.</td>
+<td>Given an alert for a package, when another event of the same package reaches the threshold within six hours, then it is stored with a reference to the first alert and not counted as a new alert.</td>
+<td>Should</td>
+</tr>
+<tr>
+<td><strong>E5</strong></td>
+<td><strong>Dashboard and API</strong></td>
+<td>—</td>
+<td>Must</td>
+</tr>
+<tr>
+<td>US5.1</td>
+<td>As an operator I want the health and lag of every process on one page, so that I see within a minute when something stops.</td>
+<td>Given the dashboard overview, when the collector has not polled for five minutes or stage 1 is more than 5 000 events behind, then the page shows the process as not running and the health endpoint returns 503.</td>
+<td>Must</td>
+</tr>
+<tr>
+<td>US5.2</td>
+<td>As an analyst I want a live feed that stays smooth with tens of thousands of rows, so that I can watch the registry for hours.</td>
+<td>Given the live feed open for an hour at 1.4 events/s, when new events arrive, then only the visible rows are rendered, scrolling stays responsive, and arrivals while scrolled away are buffered behind a banner.</td>
+<td>Must</td>
+</tr>
+<tr>
+<td>US5.3</td>
+<td>As an analyst I want filters by package, feature, candidate and alert, so that I find what I need in seconds.</td>
+<td>Given any list page, when a filter is chosen, then the list and its URL reflect the filter and the result returns within one second for the last 24 hours.</td>
+<td>Must</td>
+</tr>
+<tr>
+<td>US5.4</td>
+<td>As a researcher I want hourly statistics with charts and feature frequencies, so that I see trends and the cost of enrichment.</td>
+<td>Given the statistics page, when a range of 24 h to 30 days is chosen, then the funnel, hourly counts, feature frequencies and source requests are shown for that range.</td>
+<td>Should</td>
+</tr>
+<tr>
+<td>US5.5</td>
+<td>As an integrator I want a documented REST API with an OpenAPI contract and Swagger UI, so that I can build on the data.</td>
+<td>Given the server runs, when <code>/api/v1/openapi.json</code> is fetched, then it is a valid OpenAPI 3.1 document describing every endpoint, and Swagger UI renders it at <code>/api/docs</code>.</td>
+<td>Must</td>
+</tr>
+<tr>
+<td>US5.6</td>
+<td>As a maintainer I want a package page with every event, score and the maintainer-set history, so that I can answer &quot;was this release ours?&quot;.</td>
+<td>Given a package name, when its page is opened, then every journal event with chips, scores and verdicts is listed with the history of maintainer sets.</td>
+<td>Should</td>
+</tr>
+<tr>
+<td>US5.7</td>
+<td>As an analyst I want to see only the alerts on the packages I depend on, so that my daily review fits the time I have.</td>
+<td>Given a list of package names (for example from a lock file), when the analyst opens the alert list with this list as a filter, then only alerts on these packages are shown, with their count per day for the last 14 days.</td>
+<td>Should</td>
+</tr>
+<tr>
+<td><strong>E6</strong></td>
+<td><strong>Adaptive user interface</strong></td>
+<td>—</td>
+<td>Should</td>
+</tr>
+<tr>
+<td>US6.1</td>
+<td>As an analyst I want the feed and the event card usable at phone width, so that I can review an alert from a phone.</td>
+<td>Given a viewport of 390 px, when the feed or a card is opened, then no horizontal page scroll appears, every control is reachable and at least 44 px high, and the verdict can be recorded.</td>
+<td>Should</td>
+</tr>
+<tr>
+<td><strong>E7</strong></td>
+<td><strong>Operations</strong></td>
+<td>—</td>
+<td>Should</td>
+</tr>
+<tr>
+<td>US7.1</td>
+<td>As an operator I want an alert when the collector stops polling, so that downtime is documented, not discovered.</td>
+<td>Given the external check polls the health endpoint every minute, when it returns 503 twice in a row, then an e-mail is sent.</td>
+<td>Should</td>
+</tr>
+<tr>
+<td>US7.2</td>
+<td>As an operator I want logs of all processes in one place, so that I can trace an incident across processes.</td>
+<td>Logs of all containers are shipped to a central store and searchable by process and time.</td>
+<td>Could</td>
+</tr>
+<tr>
+<td>US7.3</td>
+<td>As the operator I want personal data removed on schedule and on request, so that the processing keeps the retention periods and the right to object.</td>
+<td>Given the retention periods of Section 2.8, when the daily clean-up runs, then snapshots of candidates without an alert older than 30 days are deleted, and an account on the exclusion list is removed from stored snapshots and the maintainer-set history and is not stored again.</td>
+<td>Should</td>
+</tr>
+<tr>
+<td><strong>E8</strong></td>
+<td><strong>Evaluation by replay</strong></td>
+<td>—</td>
+<td>Must</td>
+</tr>
+<tr>
+<td>US8.1</td>
+<td>As a researcher I want incident scenarios inserted into the recorded background at random moments, so that recall and delay are measured on the real stream.</td>
+<td>Given a scenario definition and the exported journal, when the replay runs with a seed, then the scenario is inserted at N random moments and the whole stream is scored by both stages with the same engines as production.</td>
+<td>Must</td>
+</tr>
+<tr>
+<td>US8.2</td>
+<td>As a researcher I want recall, precision, detection delay and request reduction reported per scenario, so that the evaluation is reproducible.</td>
+<td>Given a replay run, when it finishes, then a report states per scenario the share of insertions with an alert, the delay from the first publication to the alert, the background alerts in the window and the source requests, and a second run with the same seed gives the same numbers.</td>
+<td>Must</td>
+</tr>
+<tr>
+<td><strong>E9</strong></td>
+<td><strong>Calibration</strong></td>
+<td>—</td>
+<td>Could</td>
+</tr>
+<tr>
+<td>US9.1</td>
+<td>As a researcher I want thresholds set from per-feature distributions on the background, so that the candidate rate stays within the stage-2 budget.</td>
+<td>A rule set replayed on stored results reports the alerts per day it would produce; the parameter set is versioned and stored with every result.</td>
+<td>Could</td>
+</tr>
+</tbody></table>
+
+<h1>Appendix B. Diagrams</h1>
+<p>All diagrams at readable size. Reduced copies appear in the text where they are discussed.</p>
+<p><strong>Figure B.1 — AS-IS process of detecting a malicious npm publication, with the TO-BE lane of the monitor (UML activity diagram, Section 1.1)</strong></p>
+<p><p class="fig"><img src="file:///C:/_PAGES/ELS-JS/npm/documentation/ba/assets/activity-as-is.png" width="895" height="540" alt="Figure B.1"></p></p>
+<p><strong>Figure B.2 — Context diagram: users, the system and external systems (Section 2.4)</strong></p>
+<p><p class="fig"><img src="file:///C:/_PAGES/ELS-JS/npm/documentation/ba/assets/context.png" width="900" height="524" alt="Figure B.2"></p></p>
+<p><strong>Figure B.3 — Use case diagram: actors and the use cases of Sections 2.5 and 2.6</strong></p>
+<p><p class="fig"><img src="file:///C:/_PAGES/ELS-JS/npm/documentation/ba/assets/use-cases.png" width="771" height="540" alt="Figure B.3"></p></p>
+<p><strong>Figure B.4 — System sequence diagram of UC1: from a registry publication to the analyst&#39;s verdict (Section 2.6)</strong></p>
+<p><p class="fig"><img src="file:///C:/_PAGES/ELS-JS/npm/documentation/ba/assets/sequence.png" width="626" height="540" alt="Figure B.4"></p></p>
+<p><strong>Figure B.5 — Component diagram of the solution concept: six processes around one database (Section 2.4)</strong></p>
+<p><p class="fig"><img src="file:///C:/_PAGES/ELS-JS/npm/documentation/ba/assets/architecture.png" width="900" height="465" alt="Figure B.5"></p></p>
+
+<h1>Statements</h1>
+<p><strong>Use of AI.</strong> The author used Claude Code (Anthropic, model Claude Fable 5.1) during the preparation of this document and the prototype: for editing English text from the author&#39;s notes and for checking the formatting against the programme&#39;s requirements. All measurements, design decisions, analyses of sources and analogs, and conclusions are the author&#39;s own and were verified by the author.</p>
+<p><strong>Project type.</strong> Individual project.</p>
+<p><strong>Organisational data.</strong> The project uses only publicly available data of the npm registry and public APIs; no organisation&#39;s internal data was used, so no organisational consent was required.</p>
+
+</body></html>
