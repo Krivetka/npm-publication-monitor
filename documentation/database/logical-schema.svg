@@ -1,0 +1,335 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1610 1214" width="1610" height="1214" font-family="Arial, Helvetica, sans-serif">
+<title>npm-monitor: logical database schema</title>
+<rect width="1610" height="1214" fill="#FFFFFF"/>
+<defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M1,1 L9,5 L1,9" stroke="#6B46C1" stroke-width="1.4" fill="none"/></marker></defs>
+<text x="40" y="44" font-size="24" font-weight="700" fill="#17181C">Logical schema of the npm-monitor database (PostgreSQL 18)</text>
+<text x="40" y="70" font-size="14" fill="#4A4D55">Colour of the header = block. Bold = primary key. FK = foreign key column. Solid line = foreign key, dashed line = rule kept by a trigger.</text>
+<g><rect x="40" y="100" width="250" height="144" rx="6" fill="#FFFFFF" stroke="#2A78D6" stroke-width="1.6"/>
+<path d="M40,128 V106 a6,6 0 0 1 6,-6 H284 a6,6 0 0 1 6,6 V128 Z" fill="#2A78D6"/>
+<text x="50" y="119" font-size="14" font-weight="700" fill="#FFFFFF">collector_state<tspan font-weight="400" font-size="11"></tspan></text>
+<text x="50" y="143" font-size="12.5" fill="#17181C" font-weight="700">feed</text>
+<text x="280" y="143" font-size="11.5" fill="#6B7280" text-anchor="end">text</text>
+<text x="50" y="161" font-size="12.5" fill="#17181C">last_seq</text>
+<text x="280" y="161" font-size="11.5" fill="#6B7280" text-anchor="end">bigint</text>
+<text x="50" y="179" font-size="12.5" fill="#17181C">window_start</text>
+<text x="280" y="179" font-size="11.5" fill="#6B7280" text-anchor="end">timestamptz · null</text>
+<text x="50" y="197" font-size="12.5" fill="#17181C">head_seq</text>
+<text x="280" y="197" font-size="11.5" fill="#6B7280" text-anchor="end">bigint · null</text>
+<text x="50" y="215" font-size="12.5" fill="#17181C">polled_at</text>
+<text x="280" y="215" font-size="11.5" fill="#6B7280" text-anchor="end">timestamptz</text>
+<text x="50" y="233" font-size="12.5" fill="#17181C">advanced_at</text>
+<text x="280" y="233" font-size="11.5" fill="#6B7280" text-anchor="end">timestamptz</text>
+</g>
+<g><rect x="340" y="100" width="290" height="144" rx="6" fill="#FFFFFF" stroke="#2A78D6" stroke-width="1.6"/>
+<path d="M340,128 V106 a6,6 0 0 1 6,-6 H624 a6,6 0 0 1 6,6 V128 Z" fill="#2A78D6"/>
+<text x="350" y="119" font-size="14" font-weight="700" fill="#FFFFFF">feed_event<tspan font-weight="400" font-size="11"> (partitioned by month)</tspan></text>
+<text x="350" y="143" font-size="12.5" fill="#17181C" font-weight="700">seq</text>
+<text x="620" y="143" font-size="11.5" fill="#6B7280" text-anchor="end">bigint</text>
+<text x="350" y="161" font-size="12.5" fill="#17181C">package</text>
+<text x="620" y="161" font-size="11.5" fill="#6B7280" text-anchor="end">text</text>
+<text x="350" y="179" font-size="12.5" fill="#17181C">rev</text>
+<text x="620" y="179" font-size="11.5" fill="#6B7280" text-anchor="end">text</text>
+<text x="350" y="197" font-size="12.5" fill="#17181C">deleted</text>
+<text x="620" y="197" font-size="11.5" fill="#6B7280" text-anchor="end">boolean</text>
+<text x="350" y="215" font-size="12.5" fill="#17181C" font-weight="700">observed_at</text>
+<text x="620" y="215" font-size="11.5" fill="#6B7280" text-anchor="end">timestamptz</text>
+<text x="350" y="233" font-size="12.5" fill="#17181C">observed_after</text>
+<text x="620" y="233" font-size="11.5" fill="#6B7280" text-anchor="end">timestamptz · null</text>
+</g>
+<g><rect x="680" y="100" width="300" height="180" rx="6" fill="#FFFFFF" stroke="#B7791F" stroke-width="1.6"/>
+<path d="M680,128 V106 a6,6 0 0 1 6,-6 H974 a6,6 0 0 1 6,6 V128 Z" fill="#B7791F"/>
+<text x="690" y="119" font-size="14" font-weight="700" fill="#FFFFFF">feature<tspan font-weight="400" font-size="11"></tspan></text>
+<text x="690" y="143" font-size="12.5" fill="#17181C" font-weight="700">id</text>
+<text x="970" y="143" font-size="11.5" fill="#6B7280" text-anchor="end">text</text>
+<text x="690" y="161" font-size="12.5" fill="#17181C">stage</text>
+<text x="970" y="161" font-size="11.5" fill="#6B7280" text-anchor="end">smallint</text>
+<text x="690" y="179" font-size="12.5" fill="#17181C">lane</text>
+<text x="970" y="179" font-size="11.5" fill="#6B7280" text-anchor="end">text</text>
+<text x="690" y="197" font-size="12.5" fill="#17181C">weight</text>
+<text x="970" y="197" font-size="11.5" fill="#6B7280" text-anchor="end">real</text>
+<text x="690" y="215" font-size="12.5" fill="#17181C">title</text>
+<text x="970" y="215" font-size="11.5" fill="#6B7280" text-anchor="end">text</text>
+<text x="690" y="233" font-size="12.5" fill="#17181C">hint</text>
+<text x="970" y="233" font-size="11.5" fill="#6B7280" text-anchor="end">text</text>
+<text x="690" y="251" font-size="12.5" fill="#17181C">active</text>
+<text x="970" y="251" font-size="11.5" fill="#6B7280" text-anchor="end">boolean</text>
+<text x="690" y="269" font-size="12.5" fill="#17181C">updated_at</text>
+<text x="970" y="269" font-size="11.5" fill="#6B7280" text-anchor="end">timestamptz</text>
+</g>
+<g><rect x="1030" y="100" width="250" height="90" rx="6" fill="#FFFFFF" stroke="#B7791F" stroke-width="1.6"/>
+<path d="M1030,128 V106 a6,6 0 0 1 6,-6 H1274 a6,6 0 0 1 6,6 V128 Z" fill="#B7791F"/>
+<text x="1040" y="119" font-size="14" font-weight="700" fill="#FFFFFF">source<tspan font-weight="400" font-size="11"></tspan></text>
+<text x="1040" y="143" font-size="12.5" fill="#17181C" font-weight="700">id</text>
+<text x="1270" y="143" font-size="11.5" fill="#6B7280" text-anchor="end">text</text>
+<text x="1040" y="161" font-size="12.5" fill="#17181C">title</text>
+<text x="1270" y="161" font-size="11.5" fill="#6B7280" text-anchor="end">text</text>
+<text x="1040" y="179" font-size="12.5" fill="#17181C">base_url</text>
+<text x="1270" y="179" font-size="11.5" fill="#6B7280" text-anchor="end">text</text>
+</g>
+<g><rect x="1320" y="100" width="250" height="108" rx="6" fill="#FFFFFF" stroke="#2A78D6" stroke-width="1.6"/>
+<path d="M1320,128 V106 a6,6 0 0 1 6,-6 H1564 a6,6 0 0 1 6,6 V128 Z" fill="#2A78D6"/>
+<text x="1330" y="119" font-size="14" font-weight="700" fill="#FFFFFF">popular_package<tspan font-weight="400" font-size="11"></tspan></text>
+<text x="1330" y="143" font-size="12.5" fill="#17181C" font-weight="700">snapshot</text>
+<text x="1560" y="143" font-size="11.5" fill="#6B7280" text-anchor="end">date</text>
+<text x="1330" y="161" font-size="12.5" fill="#17181C">rank</text>
+<text x="1560" y="161" font-size="11.5" fill="#6B7280" text-anchor="end">integer</text>
+<text x="1330" y="179" font-size="12.5" fill="#17181C" font-weight="700">name</text>
+<text x="1560" y="179" font-size="11.5" fill="#6B7280" text-anchor="end">text</text>
+<text x="1330" y="197" font-size="12.5" fill="#17181C">downloads</text>
+<text x="1560" y="197" font-size="11.5" fill="#6B7280" text-anchor="end">bigint · null</text>
+</g>
+<g><rect x="1030" y="222" width="250" height="126" rx="6" fill="#FFFFFF" stroke="#0E7490" stroke-width="1.6"/>
+<path d="M1030,250 V228 a6,6 0 0 1 6,-6 H1274 a6,6 0 0 1 6,6 V250 Z" fill="#0E7490"/>
+<text x="1040" y="241" font-size="14" font-weight="700" fill="#FFFFFF">source_usage<tspan font-weight="400" font-size="11"></tspan></text>
+<text x="1040" y="265" font-size="12.5" fill="#17181C" font-weight="700">hour</text>
+<text x="1270" y="265" font-size="11.5" fill="#6B7280" text-anchor="end">timestamptz</text>
+<text x="1040" y="283" font-size="12.5" fill="#17181C" font-weight="700">source</text>
+<text x="1270" y="283" font-size="11.5" fill="#6B7280" text-anchor="end">text · FK</text>
+<text x="1040" y="301" font-size="12.5" fill="#17181C">requests</text>
+<text x="1270" y="301" font-size="11.5" fill="#6B7280" text-anchor="end">integer</text>
+<text x="1040" y="319" font-size="12.5" fill="#17181C">errors</text>
+<text x="1270" y="319" font-size="11.5" fill="#6B7280" text-anchor="end">integer</text>
+<text x="1040" y="337" font-size="12.5" fill="#17181C">skipped</text>
+<text x="1270" y="337" font-size="11.5" fill="#6B7280" text-anchor="end">integer</text>
+</g>
+<g><rect x="40" y="390" width="250" height="144" rx="6" fill="#FFFFFF" stroke="#C2410C" stroke-width="1.6"/>
+<path d="M40,418 V396 a6,6 0 0 1 6,-6 H284 a6,6 0 0 1 6,6 V418 Z" fill="#C2410C"/>
+<text x="50" y="409" font-size="14" font-weight="700" fill="#FFFFFF">finding<tspan font-weight="400" font-size="11"></tspan></text>
+<text x="50" y="433" font-size="12.5" fill="#17181C" font-weight="700">seq</text>
+<text x="280" y="433" font-size="11.5" fill="#6B7280" text-anchor="end">bigint · FK</text>
+<text x="50" y="451" font-size="12.5" fill="#17181C">verdict</text>
+<text x="280" y="451" font-size="11.5" fill="#6B7280" text-anchor="end">text</text>
+<text x="50" y="469" font-size="12.5" fill="#17181C">note</text>
+<text x="280" y="469" font-size="11.5" fill="#6B7280" text-anchor="end">text · null</text>
+<text x="50" y="487" font-size="12.5" fill="#17181C">reference</text>
+<text x="280" y="487" font-size="11.5" fill="#6B7280" text-anchor="end">text · null</text>
+<text x="50" y="505" font-size="12.5" fill="#17181C">decided_at</text>
+<text x="280" y="505" font-size="11.5" fill="#6B7280" text-anchor="end">timestamptz</text>
+<text x="50" y="523" font-size="12.5" fill="#17181C">observed_at</text>
+<text x="280" y="523" font-size="11.5" fill="#6B7280" text-anchor="end">timestamptz · FK</text>
+</g>
+<g><rect x="340" y="390" width="290" height="162" rx="6" fill="#FFFFFF" stroke="#2F855A" stroke-width="1.6"/>
+<path d="M340,418 V396 a6,6 0 0 1 6,-6 H624 a6,6 0 0 1 6,6 V418 Z" fill="#2F855A"/>
+<text x="350" y="409" font-size="14" font-weight="700" fill="#FFFFFF">stage1_result<tspan font-weight="400" font-size="11"></tspan></text>
+<text x="350" y="433" font-size="12.5" fill="#17181C" font-weight="700">seq</text>
+<text x="620" y="433" font-size="11.5" fill="#6B7280" text-anchor="end">bigint · FK</text>
+<text x="350" y="451" font-size="12.5" fill="#17181C">package</text>
+<text x="620" y="451" font-size="11.5" fill="#6B7280" text-anchor="end">text</text>
+<text x="350" y="469" font-size="12.5" fill="#17181C">event_time</text>
+<text x="620" y="469" font-size="11.5" fill="#6B7280" text-anchor="end">timestamptz · FK</text>
+<text x="350" y="487" font-size="12.5" fill="#17181C">prescore</text>
+<text x="620" y="487" font-size="11.5" fill="#6B7280" text-anchor="end">real</text>
+<text x="350" y="505" font-size="12.5" fill="#17181C">candidate</text>
+<text x="620" y="505" font-size="11.5" fill="#6B7280" text-anchor="end">boolean</text>
+<text x="350" y="523" font-size="12.5" fill="#17181C">features</text>
+<text x="620" y="523" font-size="11.5" fill="#6B7280" text-anchor="end">jsonb</text>
+<text x="350" y="541" font-size="12.5" fill="#17181C">engine</text>
+<text x="620" y="541" font-size="11.5" fill="#6B7280" text-anchor="end">text</text>
+</g>
+<g><rect x="680" y="390" width="300" height="288" rx="6" fill="#FFFFFF" stroke="#2F855A" stroke-width="1.6"/>
+<path d="M680,418 V396 a6,6 0 0 1 6,-6 H974 a6,6 0 0 1 6,6 V418 Z" fill="#2F855A"/>
+<text x="690" y="409" font-size="14" font-weight="700" fill="#FFFFFF">stage2_result<tspan font-weight="400" font-size="11"></tspan></text>
+<text x="690" y="433" font-size="12.5" fill="#17181C" font-weight="700">seq</text>
+<text x="970" y="433" font-size="11.5" fill="#6B7280" text-anchor="end">bigint · FK</text>
+<text x="690" y="451" font-size="12.5" fill="#17181C">package</text>
+<text x="970" y="451" font-size="11.5" fill="#6B7280" text-anchor="end">text</text>
+<text x="690" y="469" font-size="12.5" fill="#17181C">event_time</text>
+<text x="970" y="469" font-size="11.5" fill="#6B7280" text-anchor="end">timestamptz · FK</text>
+<text x="690" y="487" font-size="12.5" fill="#17181C">enriched_at</text>
+<text x="970" y="487" font-size="11.5" fill="#6B7280" text-anchor="end">timestamptz</text>
+<text x="690" y="505" font-size="12.5" fill="#17181C">kind</text>
+<text x="970" y="505" font-size="11.5" fill="#6B7280" text-anchor="end">text</text>
+<text x="690" y="523" font-size="12.5" fill="#17181C">versions</text>
+<text x="970" y="523" font-size="11.5" fill="#6B7280" text-anchor="end">text[]</text>
+<text x="690" y="541" font-size="12.5" fill="#17181C">prescore</text>
+<text x="970" y="541" font-size="11.5" fill="#6B7280" text-anchor="end">real</text>
+<text x="690" y="559" font-size="12.5" fill="#17181C">final_score</text>
+<text x="970" y="559" font-size="11.5" fill="#6B7280" text-anchor="end">real</text>
+<text x="690" y="577" font-size="12.5" fill="#17181C">alert</text>
+<text x="970" y="577" font-size="11.5" fill="#6B7280" text-anchor="end">boolean</text>
+<text x="690" y="595" font-size="12.5" fill="#17181C">features</text>
+<text x="970" y="595" font-size="11.5" fill="#6B7280" text-anchor="end">jsonb</text>
+<text x="690" y="613" font-size="12.5" fill="#17181C">evidence</text>
+<text x="970" y="613" font-size="11.5" fill="#6B7280" text-anchor="end">jsonb</text>
+<text x="690" y="631" font-size="12.5" fill="#17181C">sources</text>
+<text x="970" y="631" font-size="11.5" fill="#6B7280" text-anchor="end">jsonb</text>
+<text x="690" y="649" font-size="12.5" fill="#17181C">engine</text>
+<text x="970" y="649" font-size="11.5" fill="#6B7280" text-anchor="end">text</text>
+<text x="690" y="667" font-size="12.5" fill="#17181C">evidence_purged_at</text>
+<text x="970" y="667" font-size="11.5" fill="#6B7280" text-anchor="end">timestamptz · null</text>
+</g>
+<g><rect x="1030" y="390" width="250" height="144" rx="6" fill="#FFFFFF" stroke="#2F855A" stroke-width="1.6"/>
+<path d="M1030,418 V396 a6,6 0 0 1 6,-6 H1274 a6,6 0 0 1 6,6 V418 Z" fill="#2F855A"/>
+<text x="1040" y="409" font-size="14" font-weight="700" fill="#FFFFFF">maintainer_set<tspan font-weight="400" font-size="11"></tspan></text>
+<text x="1040" y="433" font-size="12.5" fill="#17181C" font-weight="700">package</text>
+<text x="1270" y="433" font-size="11.5" fill="#6B7280" text-anchor="end">text</text>
+<text x="1040" y="451" font-size="12.5" fill="#17181C" font-weight="700">seq</text>
+<text x="1270" y="451" font-size="11.5" fill="#6B7280" text-anchor="end">bigint · FK</text>
+<text x="1040" y="469" font-size="12.5" fill="#17181C">observed_at</text>
+<text x="1270" y="469" font-size="11.5" fill="#6B7280" text-anchor="end">timestamptz</text>
+<text x="1040" y="487" font-size="12.5" fill="#17181C">maintainers</text>
+<text x="1270" y="487" font-size="11.5" fill="#6B7280" text-anchor="end">text[]</text>
+<text x="1040" y="505" font-size="12.5" fill="#17181C">added</text>
+<text x="1270" y="505" font-size="11.5" fill="#6B7280" text-anchor="end">text[]</text>
+<text x="1040" y="523" font-size="12.5" fill="#17181C">removed</text>
+<text x="1270" y="523" font-size="11.5" fill="#6B7280" text-anchor="end">text[]</text>
+</g>
+<g><rect x="1320" y="390" width="250" height="126" rx="6" fill="#FFFFFF" stroke="#2F855A" stroke-width="1.6"/>
+<path d="M1320,418 V396 a6,6 0 0 1 6,-6 H1564 a6,6 0 0 1 6,6 V418 Z" fill="#2F855A"/>
+<text x="1330" y="409" font-size="14" font-weight="700" fill="#FFFFFF">rdap_cache<tspan font-weight="400" font-size="11"></tspan></text>
+<text x="1330" y="433" font-size="12.5" fill="#17181C" font-weight="700">domain</text>
+<text x="1560" y="433" font-size="11.5" fill="#6B7280" text-anchor="end">text</text>
+<text x="1330" y="451" font-size="12.5" fill="#17181C">fetched_at</text>
+<text x="1560" y="451" font-size="11.5" fill="#6B7280" text-anchor="end">timestamptz</text>
+<text x="1330" y="469" font-size="12.5" fill="#17181C">status</text>
+<text x="1560" y="469" font-size="11.5" fill="#6B7280" text-anchor="end">integer</text>
+<text x="1330" y="487" font-size="12.5" fill="#17181C">registered</text>
+<text x="1560" y="487" font-size="11.5" fill="#6B7280" text-anchor="end">timestamptz · null</text>
+<text x="1330" y="505" font-size="12.5" fill="#17181C">expires</text>
+<text x="1560" y="505" font-size="11.5" fill="#6B7280" text-anchor="end">timestamptz · null</text>
+</g>
+<g><rect x="40" y="570" width="250" height="180" rx="6" fill="#FFFFFF" stroke="#C2410C" stroke-width="1.6"/>
+<path d="M40,598 V576 a6,6 0 0 1 6,-6 H284 a6,6 0 0 1 6,6 V598 Z" fill="#C2410C"/>
+<text x="50" y="589" font-size="14" font-weight="700" fill="#FFFFFF">finding_history<tspan font-weight="400" font-size="11"></tspan></text>
+<text x="50" y="613" font-size="12.5" fill="#17181C" font-weight="700">id</text>
+<text x="280" y="613" font-size="11.5" fill="#6B7280" text-anchor="end">bigint</text>
+<text x="50" y="631" font-size="12.5" fill="#17181C">seq</text>
+<text x="280" y="631" font-size="11.5" fill="#6B7280" text-anchor="end">bigint</text>
+<text x="50" y="649" font-size="12.5" fill="#17181C">operation</text>
+<text x="280" y="649" font-size="11.5" fill="#6B7280" text-anchor="end">text</text>
+<text x="50" y="667" font-size="12.5" fill="#17181C">verdict</text>
+<text x="280" y="667" font-size="11.5" fill="#6B7280" text-anchor="end">text · null</text>
+<text x="50" y="685" font-size="12.5" fill="#17181C">note</text>
+<text x="280" y="685" font-size="11.5" fill="#6B7280" text-anchor="end">text · null</text>
+<text x="50" y="703" font-size="12.5" fill="#17181C">reference</text>
+<text x="280" y="703" font-size="11.5" fill="#6B7280" text-anchor="end">text · null</text>
+<text x="50" y="721" font-size="12.5" fill="#17181C">changed_at</text>
+<text x="280" y="721" font-size="11.5" fill="#6B7280" text-anchor="end">timestamptz</text>
+<text x="50" y="739" font-size="12.5" fill="#17181C">changed_by</text>
+<text x="280" y="739" font-size="11.5" fill="#6B7280" text-anchor="end">text</text>
+</g>
+<g><rect x="1320" y="560" width="250" height="90" rx="6" fill="#FFFFFF" stroke="#6B46C1" stroke-width="1.6"/>
+<path d="M1320,588 V566 a6,6 0 0 1 6,-6 H1564 a6,6 0 0 1 6,6 V588 Z" fill="#6B46C1"/>
+<text x="1330" y="579" font-size="14" font-weight="700" fill="#FFFFFF">exclusion<tspan font-weight="400" font-size="11"></tspan></text>
+<text x="1330" y="603" font-size="12.5" fill="#17181C" font-weight="700">account</text>
+<text x="1560" y="603" font-size="11.5" fill="#6B7280" text-anchor="end">text</text>
+<text x="1330" y="621" font-size="12.5" fill="#17181C">requested_at</text>
+<text x="1560" y="621" font-size="11.5" fill="#6B7280" text-anchor="end">timestamptz</text>
+<text x="1330" y="639" font-size="12.5" fill="#17181C">note</text>
+<text x="1560" y="639" font-size="11.5" fill="#6B7280" text-anchor="end">text · null</text>
+</g>
+<g><rect x="40" y="790" width="250" height="108" rx="6" fill="#FFFFFF" stroke="#2F855A" stroke-width="1.6"/>
+<path d="M40,818 V796 a6,6 0 0 1 6,-6 H284 a6,6 0 0 1 6,6 V818 Z" fill="#2F855A"/>
+<text x="50" y="809" font-size="14" font-weight="700" fill="#FFFFFF">stage_cursor<tspan font-weight="400" font-size="11"></tspan></text>
+<text x="50" y="833" font-size="12.5" fill="#17181C" font-weight="700">stage</text>
+<text x="280" y="833" font-size="11.5" fill="#6B7280" text-anchor="end">text</text>
+<text x="50" y="851" font-size="12.5" fill="#17181C">last_seq</text>
+<text x="280" y="851" font-size="11.5" fill="#6B7280" text-anchor="end">bigint</text>
+<text x="50" y="869" font-size="12.5" fill="#17181C">processed</text>
+<text x="280" y="869" font-size="11.5" fill="#6B7280" text-anchor="end">bigint</text>
+<text x="50" y="887" font-size="12.5" fill="#17181C">updated_at</text>
+<text x="280" y="887" font-size="11.5" fill="#6B7280" text-anchor="end">timestamptz</text>
+</g>
+<g><rect x="340" y="790" width="290" height="108" rx="6" fill="#FFFFFF" stroke="#0E7490" stroke-width="1.6"/>
+<path d="M340,818 V796 a6,6 0 0 1 6,-6 H624 a6,6 0 0 1 6,6 V818 Z" fill="#0E7490"/>
+<text x="350" y="809" font-size="14" font-weight="700" fill="#FFFFFF">stage1_hourly<tspan font-weight="400" font-size="11"></tspan></text>
+<text x="350" y="833" font-size="12.5" fill="#17181C" font-weight="700">hour</text>
+<text x="620" y="833" font-size="11.5" fill="#6B7280" text-anchor="end">timestamptz</text>
+<text x="350" y="851" font-size="12.5" fill="#17181C">processed</text>
+<text x="620" y="851" font-size="11.5" fill="#6B7280" text-anchor="end">integer</text>
+<text x="350" y="869" font-size="12.5" fill="#17181C">flagged</text>
+<text x="620" y="869" font-size="11.5" fill="#6B7280" text-anchor="end">integer</text>
+<text x="350" y="887" font-size="12.5" fill="#17181C">candidates</text>
+<text x="620" y="887" font-size="11.5" fill="#6B7280" text-anchor="end">integer</text>
+</g>
+<g><rect x="680" y="790" width="300" height="216" rx="6" fill="#FFFFFF" stroke="#0E7490" stroke-width="1.6"/>
+<path d="M680,818 V796 a6,6 0 0 1 6,-6 H974 a6,6 0 0 1 6,6 V818 Z" fill="#0E7490"/>
+<text x="690" y="809" font-size="14" font-weight="700" fill="#FFFFFF">daily_stats<tspan font-weight="400" font-size="11"> (materialised view)</tspan></text>
+<text x="690" y="833" font-size="12.5" fill="#17181C">day</text>
+<text x="970" y="833" font-size="11.5" fill="#6B7280" text-anchor="end">date · null</text>
+<text x="690" y="851" font-size="12.5" fill="#17181C">events</text>
+<text x="970" y="851" font-size="11.5" fill="#6B7280" text-anchor="end">integer · null</text>
+<text x="690" y="869" font-size="12.5" fill="#17181C">packages</text>
+<text x="970" y="869" font-size="11.5" fill="#6B7280" text-anchor="end">integer · null</text>
+<text x="690" y="887" font-size="12.5" fill="#17181C">flagged</text>
+<text x="970" y="887" font-size="11.5" fill="#6B7280" text-anchor="end">integer · null</text>
+<text x="690" y="905" font-size="12.5" fill="#17181C">candidates</text>
+<text x="970" y="905" font-size="11.5" fill="#6B7280" text-anchor="end">integer · null</text>
+<text x="690" y="923" font-size="12.5" fill="#17181C">enriched</text>
+<text x="970" y="923" font-size="11.5" fill="#6B7280" text-anchor="end">integer · null</text>
+<text x="690" y="941" font-size="12.5" fill="#17181C">alerts</text>
+<text x="970" y="941" font-size="11.5" fill="#6B7280" text-anchor="end">integer · null</text>
+<text x="690" y="959" font-size="12.5" fill="#17181C">alerts_popular</text>
+<text x="970" y="959" font-size="11.5" fill="#6B7280" text-anchor="end">integer · null</text>
+<text x="690" y="977" font-size="12.5" fill="#17181C">confirmed</text>
+<text x="970" y="977" font-size="11.5" fill="#6B7280" text-anchor="end">integer · null</text>
+<text x="690" y="995" font-size="12.5" fill="#17181C">false_positive</text>
+<text x="970" y="995" font-size="11.5" fill="#6B7280" text-anchor="end">integer · null</text>
+</g>
+<g><rect x="1030" y="790" width="250" height="162" rx="6" fill="#FFFFFF" stroke="#6B46C1" stroke-width="1.6"/>
+<path d="M1030,818 V796 a6,6 0 0 1 6,-6 H1274 a6,6 0 0 1 6,6 V818 Z" fill="#6B46C1"/>
+<text x="1040" y="809" font-size="14" font-weight="700" fill="#FFFFFF">retention_run<tspan font-weight="400" font-size="11"></tspan></text>
+<text x="1040" y="833" font-size="12.5" fill="#17181C" font-weight="700">ran_at</text>
+<text x="1270" y="833" font-size="11.5" fill="#6B7280" text-anchor="end">timestamptz</text>
+<text x="1040" y="851" font-size="12.5" fill="#17181C">evidence_days</text>
+<text x="1270" y="851" font-size="11.5" fill="#6B7280" text-anchor="end">integer</text>
+<text x="1040" y="869" font-size="12.5" fill="#17181C">delete_all_after</text>
+<text x="1270" y="869" font-size="11.5" fill="#6B7280" text-anchor="end">timestamptz · null</text>
+<text x="1040" y="887" font-size="12.5" fill="#17181C">snapshots_purged</text>
+<text x="1270" y="887" font-size="11.5" fill="#6B7280" text-anchor="end">integer</text>
+<text x="1040" y="905" font-size="12.5" fill="#17181C">maintainer_rows_purged</text>
+<text x="1270" y="905" font-size="11.5" fill="#6B7280" text-anchor="end">integer</text>
+<text x="1040" y="923" font-size="12.5" fill="#17181C">alerts_purged</text>
+<text x="1270" y="923" font-size="11.5" fill="#6B7280" text-anchor="end">integer</text>
+<text x="1040" y="941" font-size="12.5" fill="#17181C">findings_purged</text>
+<text x="1270" y="941" font-size="11.5" fill="#6B7280" text-anchor="end">integer</text>
+</g>
+<g><rect x="1320" y="790" width="250" height="72" rx="6" fill="#FFFFFF" stroke="#6B46C1" stroke-width="1.6"/>
+<path d="M1320,818 V796 a6,6 0 0 1 6,-6 H1564 a6,6 0 0 1 6,6 V818 Z" fill="#6B46C1"/>
+<text x="1330" y="809" font-size="14" font-weight="700" fill="#FFFFFF">schema_migrations<tspan font-weight="400" font-size="11"></tspan></text>
+<text x="1330" y="833" font-size="12.5" fill="#17181C" font-weight="700">name</text>
+<text x="1560" y="833" font-size="11.5" fill="#6B7280" text-anchor="end">text</text>
+<text x="1330" y="851" font-size="12.5" fill="#17181C">applied_at</text>
+<text x="1560" y="851" font-size="11.5" fill="#6B7280" text-anchor="end">timestamptz</text>
+</g>
+<path d="M485,244 V390" fill="none" stroke="#17181C" stroke-width="1.6"/>
+<text x="477" y="360" font-size="11.5" fill="#17181C" text-anchor="end" paint-order="stroke" stroke="#FFFFFF" stroke-width="4">1 : 0..1</text>
+<text x="477" y="374" font-size="11.5" fill="#17181C" text-anchor="end" paint-order="stroke" stroke="#FFFFFF" stroke-width="4">(seq, event_time)</text>
+<path d="M630,440 H680" fill="none" stroke="#17181C" stroke-width="1.6"/>
+<text x="655" y="432" font-size="11.5" fill="#17181C" text-anchor="middle" paint-order="stroke" stroke="#FFFFFF" stroke-width="4">1 : 0..1</text>
+<path d="M980,440 H1030" fill="none" stroke="#17181C" stroke-width="1.6"/>
+<text x="1005" y="432" font-size="11.5" fill="#17181C" text-anchor="middle" paint-order="stroke" stroke="#FFFFFF" stroke-width="4">1 : 0..N</text>
+<path d="M360,244 V330 H165 V390" fill="none" stroke="#17181C" stroke-width="1.6"/>
+<text x="175" y="322" font-size="11.5" fill="#17181C" text-anchor="start" paint-order="stroke" stroke="#FFFFFF" stroke-width="4">1 : 0..1  (seq, observed_at)</text>
+<path d="M1155,190 V222" fill="none" stroke="#17181C" stroke-width="1.6"/>
+<text x="1163" y="203" font-size="11.5" fill="#17181C" text-anchor="start" paint-order="stroke" stroke="#FFFFFF" stroke-width="4">1 : N</text>
+<path d="M830,280 V388" fill="none" stroke="#6B46C1" stroke-width="1.6" stroke-dasharray="6 4" marker-end="url(#arrow)"/>
+<text x="838" y="310" font-size="11.5" fill="#6B46C1" text-anchor="start" paint-order="stroke" stroke="#FFFFFF" stroke-width="4">feature ids of</text>
+<text x="838" y="324" font-size="11.5" fill="#6B46C1" text-anchor="start" paint-order="stroke" stroke="#FFFFFF" stroke-width="4">the JSON lists</text>
+<path d="M700,280 V350 H560 V388" fill="none" stroke="#6B46C1" stroke-width="1.6" stroke-dasharray="6 4" marker-end="url(#arrow)"/>
+<path d="M165,534 V568" fill="none" stroke="#6B46C1" stroke-width="1.6" stroke-dasharray="6 4" marker-end="url(#arrow)"/>
+<text x="173" y="551" font-size="11.5" fill="#6B46C1" text-anchor="start" paint-order="stroke" stroke="#FFFFFF" stroke-width="4">audit</text>
+<path d="M1320,600 H1155 V536" fill="none" stroke="#6B46C1" stroke-width="1.6" stroke-dasharray="6 4" marker-end="url(#arrow)"/>
+<text x="1177" y="592" font-size="11.5" fill="#6B46C1" text-anchor="start" paint-order="stroke" stroke="#FFFFFF" stroke-width="4">redaction</text>
+<path d="M1155,600 H982" fill="none" stroke="#6B46C1" stroke-width="1.6" stroke-dasharray="6 4" marker-end="url(#arrow)"/>
+<rect x="40" y="1030" width="1530" height="124" rx="6" fill="#F7F7F5" stroke="#9CA3AF" stroke-width="1.2" stroke-dasharray="5 4"/>
+<text x="52" y="1052" font-size="14" font-weight="700" fill="#17181C">Views</text>
+<text x="52" y="1076" font-size="12.5" fill="#17181C"><tspan font-weight="700">feature_hit</tspan> — one row per fired feature (relational form of the JSON lists)</text>
+<text x="822" y="1076" font-size="12.5" fill="#17181C"><tspan font-weight="700">maintainer_change</tspan> — one row per added or removed account (relational form of the arrays)</text>
+<text x="52" y="1102" font-size="12.5" fill="#17181C"><tspan font-weight="700">alert</tspan> — alerts with scores and the current verdict</text>
+<text x="822" y="1102" font-size="12.5" fill="#17181C"><tspan font-weight="700">stage2_result_masked</tspan> — stage 2 without snapshots and feature values</text>
+<text x="52" y="1128" font-size="12.5" fill="#17181C"><tspan font-weight="700">maintainer_set_masked</tspan> — maintainer history with pseudonyms</text>
+<text x="822" y="1128" font-size="12.5" fill="#17181C"><tspan font-weight="700">data_quality</tspan> — expectations of the data dictionary with the number of violations</text>
+<rect x="40" y="1178" width="16" height="16" rx="3" fill="#2A78D6"/>
+<text x="62" y="1191" font-size="12.5" fill="#17181C">Raw layer: journal and inputs</text>
+<rect x="280.1" y="1178" width="16" height="16" rx="3" fill="#B7791F"/>
+<text x="302.1" y="1191" font-size="12.5" fill="#17181C">Reference data</text>
+<rect x="416.70000000000005" y="1178" width="16" height="16" rx="3" fill="#2F855A"/>
+<text x="438.70000000000005" y="1191" font-size="12.5" fill="#17181C">Processing layer: stage results</text>
+<rect x="670.6" y="1178" width="16" height="16" rx="3" fill="#0E7490"/>
+<text x="692.6" y="1191" font-size="12.5" fill="#17181C">Mart layer: counters and totals</text>
+<rect x="924.5" y="1178" width="16" height="16" rx="3" fill="#C2410C"/>
+<text x="946.5" y="1191" font-size="12.5" fill="#17181C">Analyst layer: verdicts</text>
+<rect x="1123.2" y="1178" width="16" height="16" rx="3" fill="#6B46C1"/>
+<text x="1145.2" y="1191" font-size="12.5" fill="#17181C">Privacy and operations</text>
+</svg>

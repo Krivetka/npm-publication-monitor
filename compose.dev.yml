@@ -1,0 +1,23 @@
+# Local development: only the DB, same major version as on the server.
+# Processes run on the host: npm run migrate / npm run collector (they read .env).
+name: npm-monitor-dev
+
+services:
+  db:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_USER: npm_monitor
+      POSTGRES_PASSWORD: dev
+      POSTGRES_DB: npm_monitor
+    volumes:
+      - pgdata:/var/lib/postgresql
+    ports:
+      - "127.0.0.1:55432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U npm_monitor -d npm_monitor"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  pgdata:

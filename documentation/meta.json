@@ -1,0 +1,15 @@
+{
+  "university": "EUROPEAN HUMANITIES UNIVERSITY",
+  "department": "Academic Department of Informatics",
+  "program": "Study program: Informatika (Bachelor, part-time)",
+  "author": "IVAN KULIASHOV",
+  "authorName": "Ivan Kuliashov",
+  "year_of_study": "5th year student",
+  "title": "DESIGN AND EVALUATION OF A CONTINUOUS MONITORING SYSTEM FOR EARLY DETECTION OF SUSPICIOUS NPM PACKAGE PUBLICATIONS USING MULTI-STAGE FILTERING",
+  "titleSentence": "Design and Evaluation of a Continuous Monitoring System for Early Detection of Suspicious npm Package Publications Using Multi-Stage Filtering",
+  "kind": "BACHELOR PROJECT",
+  "supervisor": "Supervisor: dr hab., prof. UKEN Serhii Semenov",
+  "city": "Vilnius",
+  "year": "2026",
+  "keywords": "software supply chain security, npm registry, anomaly detection, publication metadata, multi-stage filtering"
+}
