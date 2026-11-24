@@ -1,4 +1,0 @@
-build/
-*.pdf
-# the mock-ups of the adaptive-UI criterion are a deliverable
-!adaptive-ui/mockups.pdf
