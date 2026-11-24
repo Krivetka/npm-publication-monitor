@@ -33,7 +33,7 @@ demonstration outside the deployment shows account names as pseudonyms (role `np
 - The journal of events holds package names only.
 
 The database applies these periods itself: function `apply_retention`, run daily by the
-`maintenance` service (see `documentation/database/README.md`).
+`maintenance` service (see the database documentation on the main branch of the repository).
 
 ## Source of the data
 
