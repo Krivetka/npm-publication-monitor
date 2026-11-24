@@ -1,0 +1,146 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 1070" width="1240" height="1070" font-family="IBM Plex Sans, Segoe UI, Arial, sans-serif" font-size="12" fill="#17181C">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#17181C"/>
+    </marker>
+    <marker id="arrow-open" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10" fill="none" stroke="#17181C" stroke-width="1.4"/>
+    </marker>
+  </defs>
+  <rect width="1240" height="1070" fill="#FFFFFF"/>
+
+  <!-- participants -->
+  <g stroke="#17181C" stroke-width="1.2" fill="#FFFFFF">
+    <rect x="30" y="30" width="120" height="40" rx="4"/>
+    <rect x="180" y="30" width="120" height="40" rx="4"/>
+    <rect x="330" y="30" width="120" height="40" rx="4"/>
+    <rect x="480" y="30" width="120" height="40" rx="4" stroke="#2A78D6" stroke-width="1.6"/>
+    <rect x="630" y="30" width="120" height="40" rx="4" stroke="#EB6834" stroke-width="1.6"/>
+    <rect x="780" y="30" width="120" height="40" rx="4"/>
+    <rect x="930" y="30" width="150" height="40" rx="4"/>
+    <rect x="1110" y="30" width="100" height="40" rx="4"/>
+  </g>
+  <g text-anchor="middle" font-weight="600">
+    <text x="90" y="55">Change feed</text>
+    <text x="240" y="55">Collector</text>
+    <text x="390" y="55">PostgreSQL</text>
+    <text x="540" y="55">Stage 1</text>
+    <text x="690" y="55">Stage 2</text>
+    <text x="840" y="55">npm registry</text>
+    <text x="1005" y="50">ecosyste.ms · deps.dev</text>
+    <text x="1005" y="64" font-weight="400" font-size="11">GitHub · RDAP</text>
+    <text x="1160" y="55">Web</text>
+  </g>
+  <!-- lifelines -->
+  <g stroke="#8A8880" stroke-width="1" stroke-dasharray="5 4">
+    <line x1="90" y1="70" x2="90" y2="1040"/>
+    <line x1="240" y1="70" x2="240" y2="1040"/>
+    <line x1="390" y1="70" x2="390" y2="1040"/>
+    <line x1="540" y1="70" x2="540" y2="1040"/>
+    <line x1="690" y1="70" x2="690" y2="1040"/>
+    <line x1="840" y1="70" x2="840" y2="1040"/>
+    <line x1="1005" y1="70" x2="1005" y2="1040"/>
+    <line x1="1160" y1="70" x2="1160" y2="1040"/>
+  </g>
+
+  <!-- frames -->
+  <g fill="none" stroke="#8A8880" stroke-width="1.2">
+    <rect x="60" y="88" width="400" height="140" rx="3"/>
+    <rect x="360" y="250" width="230" height="240" rx="3"/>
+    <rect x="360" y="510" width="700" height="340" rx="3"/>
+  </g>
+  <g fill="#F1EFEA" stroke="#8A8880" stroke-width="1">
+    <path d="M60,88 h118 v18 l-6,6 h-112 z"/>
+    <path d="M360,250 h118 v18 l-6,6 h-112 z"/>
+    <path d="M360,510 h118 v18 l-6,6 h-112 z"/>
+  </g>
+  <g font-size="11" font-weight="600">
+    <text x="66" y="102">loop every 5 s</text>
+    <text x="366" y="264">loop every 2 s</text>
+    <text x="366" y="524">loop every 5 s</text>
+  </g>
+
+  <!-- activation bars -->
+  <g fill="#FFFFFF" stroke="#17181C" stroke-width="1">
+    <rect x="235" y="120" width="10" height="98"/>
+    <rect x="385" y="190" width="10" height="28"/>
+    <rect x="535" y="280" width="10" height="195"/>
+    <rect x="385" y="280" width="10" height="90"/>
+    <rect x="385" y="450" width="10" height="25"/>
+    <rect x="685" y="532" width="10" height="300"/>
+    <rect x="385" y="532" width="10" height="45"/>
+    <rect x="835" y="597" width="10" height="35"/>
+    <rect x="1000" y="722" width="10" height="45"/>
+    <rect x="385" y="795" width="10" height="37"/>
+    <rect x="1155" y="860" width="10" height="55"/>
+    <rect x="385" y="875" width="10" height="35"/>
+  </g>
+
+  <!-- collector -->
+  <line x1="235" y1="130" x2="92" y2="130" stroke="#17181C" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <text x="164" y="124" text-anchor="middle" font-size="11">GET _changes?since=cursor&amp;limit=1000</text>
+  <line x1="92" y1="158" x2="233" y2="158" stroke="#17181C" stroke-width="1.3" stroke-dasharray="5 3" marker-end="url(#arrow-open)"/>
+  <text x="164" y="152" text-anchor="middle" font-size="11">results[] (id, rev, seq), last_seq</text>
+  <line x1="245" y1="196" x2="383" y2="196" stroke="#17181C" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <text x="314" y="190" text-anchor="middle" font-size="11">1 tx: insert feed_event, upsert collector_state</text>
+  <text x="314" y="214" text-anchor="middle" font-size="11" fill="#4F4D48">observed_after / observed_at = appearance interval</text>
+
+  <!-- stage 1 -->
+  <line x1="535" y1="293" x2="397" y2="293" stroke="#17181C" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <text x="466" y="287" text-anchor="middle" font-size="11">select feed_event after cursor</text>
+  <line x1="397" y1="318" x2="533" y2="318" stroke="#17181C" stroke-width="1.3" stroke-dasharray="5 3" marker-end="url(#arrow-open)"/>
+  <text x="466" y="312" text-anchor="middle" font-size="11">events (≤ 1000)</text>
+  <line x1="535" y1="343" x2="397" y2="343" stroke="#17181C" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <text x="466" y="337" text-anchor="middle" font-size="11">previous event per package</text>
+  <line x1="397" y1="366" x2="533" y2="366" stroke="#17181C" stroke-width="1.3" stroke-dasharray="5 3" marker-end="url(#arrow-open)"/>
+  <text x="466" y="360" text-anchor="middle" font-size="11">prev (rev, time, deleted)</text>
+  <path d="M545,392 H585 V416 H547" fill="none" stroke="#2A78D6" stroke-width="1.4" marker-end="url(#arrow)"/>
+  <text x="552" y="388" font-size="11" fill="#2A78D6">engine.process(event, prev)</text>
+  <rect x="596" y="398" width="170" height="40" rx="3" fill="#F1EFEA" stroke="#8A8880" stroke-width="1"/>
+  <text x="604" y="413" font-size="11">no network: sliding windows,</text>
+  <text x="604" y="428" font-size="11">name index, revision deltas</text>
+  <line x1="535" y1="462" x2="397" y2="462" stroke="#17181C" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <text x="466" y="456" text-anchor="middle" font-size="11">1 tx: stage1_result (hits),</text>
+  <text x="466" y="479" text-anchor="middle" font-size="11">stage1_hourly, stage_cursor</text>
+
+  <!-- stage 2 -->
+  <line x1="685" y1="545" x2="397" y2="545" stroke="#17181C" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <text x="541" y="539" text-anchor="middle" font-size="11">candidates not yet enriched, observed ≥ 60 s ago</text>
+  <line x1="397" y1="570" x2="683" y2="570" stroke="#17181C" stroke-width="1.3" stroke-dasharray="5 3" marker-end="url(#arrow-open)"/>
+  <text x="541" y="564" text-anchor="middle" font-size="11">candidate (seq, package, prescore, event span)</text>
+  <line x1="695" y1="607" x2="833" y2="607" stroke="#17181C" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <text x="764" y="601" text-anchor="middle" font-size="11">GET /&lt;package&gt;</text>
+  <line x1="835" y1="627" x2="697" y2="627" stroke="#17181C" stroke-width="1.3" stroke-dasharray="5 3" marker-end="url(#arrow-open)"/>
+  <text x="764" y="643" text-anchor="middle" font-size="11">packument: versions, time, maintainers</text>
+  <path d="M695,668 H735 V692 H697" fill="none" stroke="#EB6834" stroke-width="1.4" marker-end="url(#arrow)"/>
+  <text x="702" y="664" font-size="11" fill="#EB6834">analyzeRegistry(packument, span)</text>
+  <rect x="746" y="674" width="300" height="40" rx="3" fill="#F1EFEA" stroke="#8A8880" stroke-width="1"/>
+  <text x="754" y="689" font-size="11">versions inside the event span; publisher vs release</text>
+  <text x="754" y="704" font-size="11">history; manifest vs same-line previous; version rules</text>
+  <line x1="695" y1="737" x2="998" y2="737" stroke="#17181C" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <text x="846" y="731" text-anchor="middle" font-size="11">in parallel, each under its hourly budget</text>
+  <line x1="1000" y1="762" x2="697" y2="762" stroke="#17181C" stroke-width="1.3" stroke-dasharray="5 3" marker-end="url(#arrow-open)"/>
+  <text x="846" y="778" text-anchor="middle" font-size="11">answers, or «skipped: quota» per source</text>
+  <line x1="685" y1="810" x2="397" y2="810" stroke="#17181C" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <text x="541" y="804" text-anchor="middle" font-size="11">1 tx: insert stage2_result (score, alert, features, evidence) + source_usage</text>
+  <rect x="405" y="818" width="275" height="22" rx="3" fill="#F1EFEA" stroke="#8A8880" stroke-width="1"/>
+  <text x="413" y="833" font-size="11">evidence snapshot — before the registry purges the version</text>
+
+  <!-- web -->
+  <circle cx="1228" cy="865" r="4" fill="#17181C"/>
+  <line x1="1228" y1="865" x2="1167" y2="865" stroke="#17181C" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <text x="1150" y="858" text-anchor="end" font-size="11">GET /npm/event/&lt;seq&gt;</text>
+  <line x1="1155" y1="888" x2="397" y2="888" stroke="#17181C" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <text x="776" y="882" text-anchor="middle" font-size="11">feed_event + stage1_result + stage2_result + other events of the package</text>
+  <line x1="397" y1="908" x2="1153" y2="908" stroke="#17181C" stroke-width="1.3" stroke-dasharray="5 3" marker-end="url(#arrow-open)"/>
+  <text x="776" y="924" text-anchor="middle" font-size="11">card data → server-rendered HTML (features, values, weights, snapshot)</text>
+  <!-- live update and verdict -->
+  <line x1="1167" y1="950" x2="1222" y2="950" stroke="#17181C" stroke-width="1.3" stroke-dasharray="5 3" marker-end="url(#arrow-open)"/>
+  <text x="1150" y="946" text-anchor="end" font-size="11">stage2 result pushed over WebSocket to the open dashboard</text>
+  <line x1="1228" y1="976" x2="1167" y2="976" stroke="#17181C" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <text x="1150" y="972" text-anchor="end" font-size="11">PUT /events/&lt;seq&gt;/finding (analyst token): verdict + note</text>
+  <line x1="1155" y1="1000" x2="397" y2="1000" stroke="#17181C" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <text x="776" y="994" text-anchor="middle" font-size="11">1 tx: insert finding (verdict, note, recorded_at)</text>
+  <line x1="397" y1="1022" x2="1153" y2="1022" stroke="#17181C" stroke-width="1.3" stroke-dasharray="5 3" marker-end="url(#arrow-open)"/>
+  <text x="776" y="1038" text-anchor="middle" font-size="11">verdict shown on the card and in the lists; ground truth for the evaluation</text>
+</svg>

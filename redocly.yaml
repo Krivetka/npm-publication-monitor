@@ -1,0 +1,19 @@
+# Rules for `npm run api:lint` (Redocly CLI) over the OpenAPI document of the API.
+apis:
+  monitor:
+    root: documentation/api/schemas/openapi.json
+extends:
+  - recommended
+rules:
+  operation-description: error
+  operation-operationId-unique: error
+  no-unused-components: error
+  no-invalid-media-type-examples: error
+  path-parameters-defined: error
+  # the API is served under a path of the dashboard's host, so the server URL is relative
+  no-server-example.com: off
+  # read operations are open inside the deployment; the document states it with `security: []`
+  security-defined: error
+  # GET /status, /health, /stats/pulse and /features take no parameter and need no credentials,
+  # so they have no client-error answer to document
+  operation-4xx-response: off

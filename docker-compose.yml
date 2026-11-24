@@ -1,0 +1,79 @@
+# Production: ~/server/sites/npm-monitor on the server. The DB is the server's system
+# PostgreSQL (with its daily backup), so the containers run in host network mode and
+# connect to 127.0.0.1.
+name: npm-monitor
+
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: 10m
+    max-file: "5"
+
+# Only migrate builds the image: two services with build on the same tag build in
+# parallel and fail with "image already exists".
+x-app: &app
+  image: npm-monitor:latest
+  pull_policy: never
+  network_mode: host
+  env_file: .env
+  restart: unless-stopped
+  logging: *logging
+
+services:
+  migrate:
+    <<: *app
+    # the build installs npm packages; like the services it uses the network of the host
+    build:
+      context: .
+      network: host
+      args:
+        WEB: ${WEB_BUNDLE:-build}
+    pull_policy: build
+    command: ["node", "src/migrate.ts"]
+    restart: "no"
+
+  popular:
+    <<: *app
+    command: ["node", "src/popular/main.ts"]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+  stage1:
+    <<: *app
+    command: ["node", "src/stage1/main.ts"]
+    stop_grace_period: 30s
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+  stage2:
+    <<: *app
+    command: ["node", "src/stage2/main.ts"]
+    stop_grace_period: 30s
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+  web:
+    <<: *app
+    command: ["node", "src/web/main.ts"]
+    stop_grace_period: 10s
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+  maintenance:
+    <<: *app
+    command: ["node", "src/maintenance/main.ts"]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+  collector:
+    <<: *app
+    command: ["node", "src/collector/main.ts"]
+    stop_grace_period: 30s
+    depends_on:
+      migrate:
+        condition: service_completed_successfully

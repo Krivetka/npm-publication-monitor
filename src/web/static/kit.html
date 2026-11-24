@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Component library · npm monitor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<script src="prefs.js"></script>
+<link rel="stylesheet" href="styles.css">
+<style>
+/* Layout of this page only. Every component below uses the classes of styles.css unchanged. */
+.kit main.wrap{gap:2.5rem}
+.kit h2{padding-bottom:0.5rem;border-bottom:1px solid var(--line)}
+.kit .spec{color:var(--ink-3);font-size:0.8125rem;margin:0}
+.kit .row{display:flex;flex-wrap:wrap;align-items:flex-start;gap:1rem 1.5rem}
+.kit .cell{display:flex;flex-direction:column;gap:0.375rem;min-width:0}
+.kit .cap{font-size:0.75rem;color:var(--ink-3)}
+.kit .on-band{background:var(--band);color:var(--band-ink);border-radius:0.625rem;padding:1rem 1.25rem}
+.kit .on-band .cap{color:var(--band-ink-3)}
+.kit .swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(9.5rem,1fr));gap:0.75rem}
+.kit .swatch{border:1px solid var(--line);border-radius:0.5rem;overflow:hidden;background:var(--panel)}
+.kit .swatch i{display:block;height:3rem}
+.kit .swatch span{display:block;padding:0.375rem 0.625rem;font-size:0.75rem}
+.kit .type-row{display:flex;flex-wrap:wrap;align-items:baseline;gap:0.5rem 1.5rem;padding:0.5rem 0;border-bottom:1px solid var(--line-2)}
+.kit .type-row .cap{flex:0 0 14rem}
+.kit .space i{display:inline-block;height:1rem;background:var(--series);border-radius:2px;vertical-align:middle;margin-right:0.5rem}
+/* states that need a pointer or the keyboard are drawn with the declarations of styles.css */
+.kit .show-focus{outline:2px solid var(--focus);outline-offset:2px}
+.kit .show-hover-pill{border-color:var(--band-accent)}
+.kit .show-hover-link{color:var(--link-h);text-decoration:underline}
+.kit .frame{border:1px dashed var(--line);border-radius:0.5rem;padding:0.75rem;background:var(--bg)}
+.kit .demo-feed{border:1px solid var(--line);border-radius:0.625rem;background:var(--panel);overflow:hidden}
+.kit .tabs-demo{position:static!important;display:flex;gap:0 1.375rem;padding:0 1rem;background:var(--band);border-radius:0.5rem;overflow-x:auto}
+/* print (the PDF of the mock-ups): each topic starts a page, colours are kept, a component is not cut */
+@media print{
+  html,body{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .kit section+section{break-before:page}
+  .kit section h2{break-after:avoid}
+  .kit .row,.kit .cell,.kit .swatch,.kit .type-row,.kit .on-band,.kit table{break-inside:avoid}
+}
+</style>
+</head>
+<body class="kit">
+<div class="band">
+  <header><div class="wrap"><a class="brand" href="../"><svg class="ico" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg><span>npm monitor</span></a></div></header>
+  <div class="wrap hero"><div><h1>Component library</h1><p class="lead">The design system of the dashboard: tokens, type, spacing and every reusable component with its states. This page uses the stylesheet of the application unchanged, so it cannot drift from it.</p></div></div>
+</div>
+<main class="wrap">
+
+<section aria-labelledby="k-tokens"><h2 id="k-tokens">1. Colour tokens</h2>
+  <p class="spec">Each token has a light and a dark value; the page follows the system setting or the choice in the footer of the dashboard. Blue marks data, red marks alerts only, and a state never relies on colour alone: it carries an icon or a label.</p>
+  <div class="swatches">
+    <div class="swatch"><i style="background:var(--bg)"></i><span><b>--bg</b><br>page</span></div>
+    <div class="swatch"><i style="background:var(--panel)"></i><span><b>--panel</b><br>panels, tables</span></div>
+    <div class="swatch"><i style="background:var(--chip)"></i><span><b>--chip</b><br>chips, code</span></div>
+    <div class="swatch"><i style="background:var(--line)"></i><span><b>--line</b><br>borders</span></div>
+    <div class="swatch"><i style="background:var(--ink)"></i><span><b>--ink</b><br>text</span></div>
+    <div class="swatch"><i style="background:var(--ink-2)"></i><span><b>--ink-2</b><br>secondary text</span></div>
+    <div class="swatch"><i style="background:var(--ink-3)"></i><span><b>--ink-3</b><br>muted text</span></div>
+    <div class="swatch"><i style="background:var(--link)"></i><span><b>--link</b><br>links</span></div>
+    <div class="swatch"><i style="background:var(--series)"></i><span><b>--series</b><br>data, stage 1</span></div>
+    <div class="swatch"><i style="background:var(--series-2)"></i><span><b>--series-2</b><br>stage 2</span></div>
+    <div class="swatch"><i style="background:var(--good)"></i><span><b>--good</b><br>ok</span></div>
+    <div class="swatch"><i style="background:var(--warn)"></i><span><b>--warn</b><br>warning</span></div>
+    <div class="swatch"><i style="background:var(--bad)"></i><span><b>--bad</b><br>alert text</span></div>
+    <div class="swatch"><i style="background:var(--bad-dot)"></i><span><b>--bad-dot</b><br>alert mark</span></div>
+    <div class="swatch"><i style="background:var(--band)"></i><span><b>--band</b><br>band: header and hero</span></div>
+    <div class="swatch"><i style="background:var(--band-accent)"></i><span><b>--band-accent</b><br>selection in the band</span></div>
+    <div class="swatch"><i style="background:var(--focus)"></i><span><b>--focus</b><br>focus ring</span></div>
+  </div>
+</section>
+
+<section aria-labelledby="k-type"><h2 id="k-type">2. Typography</h2>
+  <p class="spec">IBM Plex Sans for text, IBM Plex Mono for numbers, versions and identifiers. Sizes are in rem, so the browser's text size and the text-size setting scale them together with the layout.</p>
+  <div>
+    <div class="type-row"><span class="cap">Page title · 1.875rem / 600</span><span style="font-size:1.875rem;font-weight:600;letter-spacing:-.01em">Live feed</span></div>
+    <div class="type-row"><span class="cap">Section title · 1.125rem / 600</span><h2 style="border:0;padding:0">Pipeline status</h2></div>
+    <div class="type-row"><span class="cap">Subsection · 0.9375rem / 600</span><h3 style="margin:0">Publication</h3></div>
+    <div class="type-row"><span class="cap">Body · 0.875rem / 400, line 1.5</span><span>An alert is a signal for review with its evidence.</span></div>
+    <div class="type-row"><span class="cap">Secondary · 0.8125rem</span><span class="muted" style="font-size:0.8125rem">popular-package snapshot of 2026-11-24</span></div>
+    <div class="type-row"><span class="cap">Figure · mono 2.375rem / 500</span><span class="mono" style="font-size:2.375rem;font-weight:500;line-height:1.1">99 042</span></div>
+    <div class="type-row"><span class="cap">Identifier · mono 0.8125rem</span><span class="mono" style="font-size:0.8125rem">0.171.0-alpha.2</span></div>
+  </div>
+</section>
+
+<section aria-labelledby="k-space"><h2 id="k-space">3. Spacing, radius, targets</h2>
+  <p class="spec">One scale of steps; a control is never lower than 2.75rem (44 px), the minimum touch target.</p>
+  <div class="space">
+    <div><i style="width:0.25rem"></i>0.25rem · inside chips</div>
+    <div><i style="width:0.5rem"></i>0.5rem · between controls</div>
+    <div><i style="width:0.75rem"></i>0.75rem · grid gap</div>
+    <div><i style="width:1rem"></i>1rem · cell padding, phone gutter</div>
+    <div><i style="width:1.5rem"></i>1.5rem · desktop gutter</div>
+    <div><i style="width:2.125rem"></i>2.125rem · between sections</div>
+    <div><i style="width:2.75rem"></i>2.75rem · minimum height of a control</div>
+  </div>
+  <p class="spec">Radius: 0.25rem chips · 0.375rem controls · 0.625rem panels · full for pills. Borders and the focus ring stay in px: 1 px and 2 px.</p>
+</section>
+
+<section aria-labelledby="k-buttons"><h2 id="k-buttons">4. Buttons</h2>
+  <div class="row">
+    <div class="cell"><button class="btn" type="button">Store verdict</button><span class="cap">Primary · default</span></div>
+    <div class="cell"><button class="btn show-focus" type="button">Store verdict</button><span class="cap">Primary · focus</span></div>
+    <div class="cell"><button class="btn" type="button" disabled>Store verdict</button><span class="cap">Primary · disabled</span></div>
+    <div class="cell"><button class="btn secondary" type="button">Open a file</button><span class="cap">Secondary · default</span></div>
+    <div class="cell"><button class="btn-link" type="button">Older</button><span class="cap">Link button · default</span></div>
+    <div class="cell"><button class="btn-link" type="button" disabled>Newer</button><span class="cap">Link button · disabled</span></div>
+  </div>
+  <div class="on-band"><div class="row">
+    <div class="cell"><button class="btn-ghost" type="button">Search</button><span class="cap">Ghost (on the band) · default</span></div>
+    <div class="cell"><button class="btn-ghost" type="button" aria-pressed="true">Pause</button><span class="cap">Ghost · pressed</span></div>
+    <div class="cell"><button class="btn-ghost show-focus" type="button">Search</button><span class="cap">Ghost · focus</span></div>
+  </div></div>
+</section>
+
+<section aria-labelledby="k-pills"><h2 id="k-pills">5. Filter pills and segmented choices</h2>
+  <div class="on-band"><div class="row">
+    <div class="cell"><a class="fpill" href="#k-pills">All events</a><span class="cap">Pill · default</span></div>
+    <div class="cell"><a class="fpill show-hover-pill" href="#k-pills">Stage 1 hits</a><span class="cap">Pill · hover</span></div>
+    <div class="cell"><a class="fpill" href="#k-pills" aria-current="true">Alerts</a><span class="cap">Pill · selected</span></div>
+    <div class="cell"><a class="fpill" href="#k-pills">Package burst <span class="c">1 204</span></a><span class="cap">Pill with a count</span></div>
+    <div class="cell"><a class="fpill show-focus" href="#k-pills">Candidates</a><span class="cap">Pill · focus</span></div>
+  </div></div>
+  <div class="row">
+    <div class="cell"><div class="display" style="margin:0"><button class="seg-btn" type="button" aria-pressed="true">Auto</button><button class="seg-btn" type="button" aria-pressed="false">Light</button><button class="seg-btn" type="button" aria-pressed="false">Dark</button></div><span class="cap">Segmented choice · theme</span></div>
+    <div class="cell"><div class="display" style="margin:0"><button class="seg-btn" type="button" aria-pressed="true">A</button><button class="seg-btn" type="button" aria-pressed="false">A+</button><button class="seg-btn" type="button" aria-pressed="false">A++</button></div><span class="cap">Segmented choice · text size</span></div>
+    <div class="cell"><div class="verdict-box" style="padding:0"><div class="opts"><button class="vbtn confirmed" type="button" aria-pressed="true">Confirmed</button><button class="vbtn false_positive" type="button" aria-pressed="false">False positive</button><button class="vbtn" type="button" aria-pressed="false">Undecided</button></div></div><span class="cap">Verdict choice · first selected</span></div>
+  </div>
+</section>
+
+<section aria-labelledby="k-inputs"><h2 id="k-inputs">6. Inputs</h2>
+  <div class="on-band"><div class="row">
+    <div class="cell"><form class="search" style="margin:0;padding:0" action="#k-inputs"><label class="sr" for="k-s1">Package</label><input id="k-s1" type="search" placeholder="package, e.g. lodash"><button class="btn-ghost" type="button">Search</button></form><span class="cap">Search field with its button</span></div>
+  </div></div>
+  <div class="row">
+    <div class="cell verdict-box" style="padding:0;flex:1 1 16rem"><label style="display:flex;flex-direction:column;gap:0.25rem;color:var(--ink-2);font-size:0.8125rem">Note<input type="text" placeholder="why this verdict"></label><span class="cap">Text field · empty</span></div>
+    <div class="cell verdict-box" style="padding:0;flex:1 1 16rem"><label style="display:flex;flex-direction:column;gap:0.25rem;color:var(--ink-2);font-size:0.8125rem">Note<input class="show-focus" type="text" value="nightly build from the project CI"></label><span class="cap">Text field · focus, filled</span></div>
+  </div>
+</section>
+
+<section aria-labelledby="k-labels"><h2 id="k-labels">7. Labels: chips, states, pills</h2>
+  <div class="row">
+    <div class="cell"><span><span class="chip">Package burst <span class="cv">z 2.83</span></span><span class="chip">New install script <span class="cv">preinstall</span></span></span><span class="cap">Feature chips with the measured value</span></div>
+    <div class="cell"><span class="state ok">✓ running</span><span class="cap">State · ok</span></div>
+    <div class="cell"><span class="state warn">! behind</span><span class="cap">State · warning</span></div>
+    <div class="cell"><span class="state bad">▲ problem</span><span class="cap">State · bad</span></div>
+    <div class="cell"><span class="verdict-s bad">▲ alert</span><span class="cap">Verdict · alert</span></div>
+    <div class="cell"><span class="verdict-s ok">✓ no alert</span><span class="cap">Verdict · no alert</span></div>
+    <div class="cell"><span class="verdict-s wait">… awaiting enrichment</span><span class="cap">Verdict · waiting</span></div>
+    <div class="cell"><span class="status-chip ok">200</span><span class="cap">Source answer</span></div>
+  </div>
+  <div class="on-band"><div class="row">
+    <div class="cell"><p class="pill ok">✓ Live · 12 events since open</p><span class="cap">Status pill · ok</span></div>
+    <div class="cell"><p class="pill warn">! collector silent, last poll 6 min ago</p><span class="cap">Status pill · warning</span></div>
+    <div class="cell"><p class="pill bad">▲ alert</p><span class="cap">Status pill · alert</span></div>
+    <div class="cell"><p class="pill neutral">paused</p><span class="cap">Status pill · neutral</span></div>
+  </div></div>
+</section>
+
+<section aria-labelledby="k-data"><h2 id="k-data">8. Data: meter, tile, table</h2>
+  <div class="row">
+    <div class="cell" style="flex:1 1 12rem"><div class="meter"><span class="mv">2</span><div class="track"><div class="fill" style="width:20%"></div><span class="tickm" style="left:40%"></span></div></div><span class="cap">Score meter · below the threshold (the black tick)</span></div>
+    <div class="cell" style="flex:1 1 12rem"><div class="meter"><span class="mv">6.5</span><div class="track"><div class="fill hot" style="width:65%"></div><span class="tickm" style="left:40%"></span></div></div><span class="cap">Score meter · alert</span></div>
+  </div>
+  <div class="grid-auto">
+    <div class="panel tile"><div class="head"><span class="v">Collector</span><span class="state ok">✓ running</span></div><span class="k">Polled 4 s ago</span><span class="n">lag behind the feed head: 0 seq</span></div>
+    <div class="panel tile"><div class="head"><span class="v">Stage 2</span><span class="state warn">! behind</span></div><span class="k">212 in queue</span><span class="n">last enrichment 3 min ago</span></div>
+  </div>
+  <div class="panel scroll"><table style="min-width:40rem">
+    <tr><th>Time</th><th>Package</th><th>Versions</th><th>Score</th><th>Verdict</th></tr>
+    <tr><td class="nowrap"><a href="#k-data">24.11 15:46:04</a></td><td><a class="pkg" href="#k-data">@scope/package-name</a></td><td class="mono" style="font-size:0.8125rem">1.4.2</td><td><div class="meter"><span class="mv">4.5</span><div class="track"><div class="fill hot" style="width:45%"></div><span class="tickm" style="left:40%"></span></div></div></td><td><span class="verdict-s bad">▲ alert</span></td></tr>
+    <tr><td class="nowrap"><a class="show-hover-link" href="#k-data">24.11 15:41:17</a></td><td><a class="pkg" href="#k-data">quiet-library</a></td><td class="mono" style="font-size:0.8125rem">2.0.0</td><td><div class="meter"><span class="mv">2</span><div class="track"><div class="fill" style="width:20%"></div><span class="tickm" style="left:40%"></span></div></div></td><td><span class="verdict-s ok">✓ no alert</span></td></tr>
+  </table></div>
+  <p class="spec">A table lives in a panel that scrolls sideways on its own; the page never scrolls horizontally. The second row shows the hover state of a link.</p>
+</section>
+
+<section aria-labelledby="k-nav"><h2 id="k-nav">9. Navigation</h2>
+  <div class="cell"><nav class="tabs tabs-demo" aria-label="Sections, example"><a href="#k-nav">Overview</a><a href="#k-nav" aria-current="page">Live feed<span class="live-dot on"></span></a><a href="#k-nav">Alerts</a><a href="#k-nav">My dependencies</a><a href="#k-nav">Stage 2</a><a href="#k-nav">Stage 1</a><a href="#k-nav">Statistics</a></nav><span class="cap">Main navigation. Desktop and tablet: in the header. Phone: the same component fixed to the bottom edge, in reach of the thumb; it scrolls sideways when the items do not fit.</span></div>
+</section>
+
+<section aria-labelledby="k-messages"><h2 id="k-messages">10. Messages</h2>
+  <div class="panel error">Could not load: HTTP 500. <button class="btn-link" type="button">Retry</button></div>
+  <div class="panel empty"><div>No alert on these packages in the last 14 days.</div></div>
+  <div class="demo-feed"><div class="banner">12 new events · show</div><div class="frow" style="height:3.5rem"><a class="t" href="#k-messages">15:46:04</a><a class="p" href="#k-messages">@scope/package-name</a><div class="f"><span class="chip">Package burst <span class="cv">z 2.83</span></span></div><div class="m"><div class="meter"><span class="mv">4.5</span><div class="track"><div class="fill hot" style="width:45%"></div><span class="tickm" style="left:40%"></span></div></div></div><div class="v"><span class="verdict-s bad">▲ alert</span></div></div></div>
+  <p class="spec">Error box, empty state, and a feed row under the banner that buffers arrivals while the reader is paused or scrolled away.</p>
+</section>
+
+</main>
+<footer class="wrap foot"><a href="../">Back to the dashboard</a><span>Component library of the npm Publication Monitor.</span></footer>
+</body>
+</html>

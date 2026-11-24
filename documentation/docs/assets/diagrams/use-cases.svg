@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" width="1000" height="600" font-family="IBM Plex Sans, Segoe UI, Arial, sans-serif" font-size="13" fill="#17181C">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#17181C"/>
+    </marker>
+    <marker id="arrow-open" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10" fill="none" stroke="#17181C" stroke-width="1.4"/>
+    </marker>
+  </defs>
+  <rect width="1000" height="600" fill="#FFFFFF"/>
+
+  <!-- system boundary -->
+  <rect x="250" y="30" width="510" height="540" rx="6" fill="#FFFFFF" stroke="#8A8880" stroke-width="1.2"/>
+  <text x="505" y="52" text-anchor="middle" font-size="14" font-weight="600">npm Publication Monitor</text>
+
+  <!-- actors: stick figures -->
+  <g stroke="#17181C" stroke-width="1.6" fill="none">
+    <!-- Security analyst at (95,115) -->
+    <circle cx="95" cy="87" r="10"/>
+    <line x1="95" y1="97" x2="95" y2="121"/>
+    <line x1="81" y1="107" x2="109" y2="107"/>
+    <line x1="95" y1="121" x2="83" y2="139"/>
+    <line x1="95" y1="121" x2="107" y2="139"/>
+    <!-- Package maintainer at (95,235) -->
+    <circle cx="95" cy="207" r="10"/>
+    <line x1="95" y1="217" x2="95" y2="241"/>
+    <line x1="81" y1="227" x2="109" y2="227"/>
+    <line x1="95" y1="241" x2="83" y2="259"/>
+    <line x1="95" y1="241" x2="107" y2="259"/>
+    <!-- Researcher at (95,355) -->
+    <circle cx="95" cy="327" r="10"/>
+    <line x1="95" y1="337" x2="95" y2="361"/>
+    <line x1="81" y1="347" x2="109" y2="347"/>
+    <line x1="95" y1="361" x2="83" y2="379"/>
+    <line x1="95" y1="361" x2="107" y2="379"/>
+    <!-- Operator at (95,480) -->
+    <circle cx="95" cy="452" r="10"/>
+    <line x1="95" y1="462" x2="95" y2="486"/>
+    <line x1="81" y1="472" x2="109" y2="472"/>
+    <line x1="95" y1="486" x2="83" y2="504"/>
+    <line x1="95" y1="486" x2="107" y2="504"/>
+  </g>
+  <text x="95" y="157" text-anchor="middle">Security analyst</text>
+  <text x="95" y="277" text-anchor="middle">Package maintainer</text>
+  <text x="95" y="397" text-anchor="middle">Researcher</text>
+  <text x="95" y="522" text-anchor="middle">Operator</text>
+
+  <!-- external systems -->
+  <g stroke="#8A8880" stroke-width="1.2" fill="#F1EFEA">
+    <rect x="820" y="392" width="160" height="56" rx="4"/>
+    <rect x="820" y="472" width="160" height="56" rx="4"/>
+  </g>
+  <text x="900" y="412" text-anchor="middle" font-size="11" fill="#4F4D48">«external system»</text>
+  <text x="900" y="432" text-anchor="middle" font-weight="600">npm change feed</text>
+  <text x="900" y="492" text-anchor="middle" font-size="11" fill="#4F4D48">«external system»</text>
+  <text x="900" y="512" text-anchor="middle" font-weight="600">External sources</text>
+
+  <!-- use cases: left column x=370, right column x=640 -->
+  <g stroke="#2A78D6" stroke-width="1.4" fill="#FFFFFF">
+    <ellipse cx="370" cy="80" rx="95" ry="26"/>
+    <ellipse cx="370" cy="150" rx="95" ry="26"/>
+    <ellipse cx="370" cy="240" rx="95" ry="26"/>
+    <ellipse cx="370" cy="320" rx="95" ry="26"/>
+    <ellipse cx="370" cy="420" rx="95" ry="26"/>
+    <ellipse cx="370" cy="500" rx="95" ry="26"/>
+    <ellipse cx="640" cy="80" rx="95" ry="26"/>
+    <ellipse cx="640" cy="160" rx="95" ry="26"/>
+    <ellipse cx="640" cy="420" rx="95" ry="26"/>
+    <ellipse cx="640" cy="500" rx="95" ry="26"/>
+  </g>
+  <text x="370" y="85" text-anchor="middle">Review alerts</text>
+  <text x="370" y="155" text-anchor="middle">Search package history</text>
+  <text x="370" y="245" text-anchor="middle">Replay incident scenarios</text>
+  <text x="370" y="316" text-anchor="middle">Read hourly counters</text>
+  <text x="370" y="332" text-anchor="middle">&amp; source usage</text>
+  <text x="370" y="425" text-anchor="middle">Check pipeline status</text>
+  <text x="370" y="505" text-anchor="middle">Deploy</text>
+  <text x="640" y="85" text-anchor="middle">Open event card</text>
+  <text x="640" y="165" text-anchor="middle">Verify evidence snapshot</text>
+  <text x="640" y="425" text-anchor="middle">Collect change feed</text>
+  <text x="640" y="505" text-anchor="middle">Enrich candidate</text>
+
+  <!-- associations -->
+  <g stroke="#17181C" stroke-width="1.2">
+    <line x1="112" y1="112" x2="275" y2="82"/>
+    <line x1="112" y1="118" x2="275" y2="148"/>
+    <line x1="112" y1="232" x2="275" y2="154"/>
+    <line x1="112" y1="350" x2="275" y2="244"/>
+    <line x1="112" y1="356" x2="275" y2="320"/>
+    <line x1="112" y1="476" x2="275" y2="424"/>
+    <line x1="112" y1="482" x2="275" y2="498"/>
+    <line x1="820" y1="420" x2="735" y2="420"/>
+    <line x1="820" y1="500" x2="735" y2="500"/>
+  </g>
+
+  <!-- extend relationships -->
+  <g stroke="#17181C" stroke-width="1.2" stroke-dasharray="6 4" fill="none">
+    <line x1="545" y1="80" x2="467" y2="80" marker-end="url(#arrow-open)"/>
+    <line x1="640" y1="134" x2="640" y2="108" marker-end="url(#arrow-open)"/>
+  </g>
+  <text x="506" y="72" text-anchor="middle" font-size="11" fill="#4F4D48">«extend»</text>
+  <text x="690" y="125" text-anchor="start" font-size="11" fill="#4F4D48">«extend»</text>
+</svg>

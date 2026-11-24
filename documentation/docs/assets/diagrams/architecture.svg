@@ -1,0 +1,177 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 640" width="1240" height="640" font-family="IBM Plex Sans, Segoe UI, Arial, sans-serif" font-size="12" fill="#17181C">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#17181C"/>
+    </marker>
+  </defs>
+  <rect width="1240" height="640" fill="#FFFFFF"/>
+
+  <!-- host -->
+  <rect x="290" y="60" width="690" height="560" rx="8" fill="#FFFFFF" stroke="#8A8880" stroke-width="1.4"/>
+  <text x="305" y="82" font-size="14" font-weight="600">Always-on node (Linux)</text>
+
+  <!-- docker compose group -->
+  <rect x="305" y="100" width="660" height="230" rx="6" fill="#FFFFFF" stroke="#8A8880" stroke-width="1.2" stroke-dasharray="6 4"/>
+  <text x="318" y="118" font-size="12" fill="#4F4D48">Docker Compose · image npm-monitor:latest (node:24-alpine) · network_mode: host</text>
+
+  <!-- services row 1 -->
+  <g stroke="#17181C" stroke-width="1.2" fill="#FFFFFF">
+    <rect x="320" y="165" width="120" height="65" rx="4"/>
+    <rect x="490" y="165" width="120" height="65" rx="4" stroke="#2A78D6" stroke-width="1.6"/>
+    <rect x="660" y="165" width="120" height="65" rx="4" stroke="#EB6834" stroke-width="1.6"/>
+    <rect x="830" y="165" width="120" height="65" rx="4"/>
+  </g>
+  <text x="380" y="186" text-anchor="middle" font-weight="600">collector</text>
+  <text x="380" y="203" text-anchor="middle" font-size="11" fill="#4F4D48">poll every 5 s</text>
+  <text x="380" y="218" text-anchor="middle" font-size="11" fill="#4F4D48">cursor + 1 tx per page</text>
+  <text x="550" y="186" text-anchor="middle" font-weight="600">stage1</text>
+  <text x="550" y="203" text-anchor="middle" font-size="11" fill="#2A78D6">no network I/O</text>
+  <text x="550" y="218" text-anchor="middle" font-size="11" fill="#4F4D48">4 lanes, prescore</text>
+  <text x="720" y="186" text-anchor="middle" font-weight="600">stage2</text>
+  <text x="720" y="203" text-anchor="middle" font-size="11" fill="#EB6834">enrichment, quotas</text>
+  <text x="720" y="218" text-anchor="middle" font-size="11" fill="#4F4D48">final score, alert</text>
+  <text x="890" y="186" text-anchor="middle" font-weight="600">web</text>
+  <text x="890" y="203" text-anchor="middle" font-size="11" fill="#4F4D48">127.0.0.1:8090</text>
+  <text x="890" y="218" text-anchor="middle" font-size="11" fill="#4F4D48">read-only, SSR</text>
+
+  <!-- services row 2 -->
+  <g stroke="#17181C" stroke-width="1.2" fill="#FFFFFF">
+    <rect x="320" y="255" width="120" height="60" rx="4" stroke-dasharray="4 3"/>
+    <rect x="660" y="255" width="120" height="60" rx="4"/>
+  </g>
+  <text x="380" y="276" text-anchor="middle" font-weight="600">migrate</text>
+  <text x="380" y="293" text-anchor="middle" font-size="11" fill="#4F4D48">one-shot, migrations</text>
+  <text x="380" y="307" text-anchor="middle" font-size="11" fill="#4F4D48">schema_migrations</text>
+  <text x="720" y="276" text-anchor="middle" font-weight="600">popular</text>
+  <text x="720" y="293" text-anchor="middle" font-size="11" fill="#4F4D48">top-10 000 packages</text>
+  <text x="720" y="307" text-anchor="middle" font-size="11" fill="#4F4D48">daily snapshot</text>
+
+  <!-- pipeline flow between services -->
+  <g stroke="#17181C" stroke-width="1.4" fill="none">
+    <line x1="440" y1="197" x2="488" y2="197" marker-end="url(#arrow)"/>
+    <line x1="610" y1="197" x2="658" y2="197" marker-end="url(#arrow)"/>
+    <line x1="780" y1="197" x2="828" y2="197" marker-end="url(#arrow)"/>
+    <path d="M660,285 H560 V232" marker-end="url(#arrow)"/>
+  </g>
+  <text x="464" y="152" text-anchor="middle" font-size="11">feed_event</text>
+  <text x="634" y="152" text-anchor="middle" font-size="11">stage1_result</text>
+  <text x="634" y="164" text-anchor="middle" font-size="11" fill="#4F4D48">(candidates)</text>
+  <text x="804" y="152" text-anchor="middle" font-size="11">stage2_result</text>
+  <text x="804" y="164" text-anchor="middle" font-size="11" fill="#4F4D48">(alerts)</text>
+  <text x="566" y="280" font-size="11">popular_package</text>
+
+  <!-- nginx (system service) -->
+  <rect x="305" y="350" width="165" height="40" rx="4" fill="#FFFFFF" stroke="#17181C" stroke-width="1.2"/>
+  <text x="387" y="367" text-anchor="middle" font-weight="600">nginx :80</text>
+  <text x="387" y="382" text-anchor="middle" font-size="11" fill="#4F4D48">/npm/ → 127.0.0.1:8090</text>
+  <path d="M470,370 H890 V232" fill="none" stroke="#17181C" stroke-width="1.4" marker-end="url(#arrow)"/>
+  <text x="690" y="364" text-anchor="middle" font-size="11">proxy_pass</text>
+
+  <!-- compose -> postgres -->
+  <line x1="940" y1="330" x2="940" y2="398" stroke="#17181C" stroke-width="1.4" marker-end="url(#arrow)"/>
+  <text x="930" y="352" text-anchor="end" font-size="11">postgres.js · 127.0.0.1:5432</text>
+  <text x="930" y="366" text-anchor="end" font-size="11" fill="#4F4D48">one transaction per batch</text>
+
+  <!-- PostgreSQL -->
+  <rect x="305" y="400" width="660" height="205" rx="6" fill="#FFFFFF" stroke="#17181C" stroke-width="1.4"/>
+  <text x="318" y="420" font-size="13" font-weight="600">PostgreSQL 18 · system service · database npm_monitor</text>
+
+  <!-- table groups: x = 320, 449, 578, 707, 836; width 119 -->
+  <g fill="#F1EFEA" stroke="none">
+    <rect x="320" y="432" width="119" height="160" rx="4"/>
+    <rect x="449" y="432" width="119" height="160" rx="4"/>
+    <rect x="578" y="432" width="119" height="160" rx="4"/>
+    <rect x="707" y="432" width="119" height="160" rx="4"/>
+    <rect x="836" y="432" width="119" height="160" rx="4"/>
+  </g>
+  <g font-size="11" fill="#4F4D48" text-anchor="middle">
+    <text x="379" y="448">written by collector</text>
+    <text x="508" y="448">written by popular</text>
+    <text x="637" y="448">written by stage1</text>
+    <text x="766" y="448">written by stage2</text>
+    <text x="895" y="448">written by migrate</text>
+  </g>
+  <g stroke="#8A8880" stroke-width="1" fill="#FFFFFF">
+    <rect x="326" y="458" width="107" height="24" rx="3"/>
+    <rect x="326" y="490" width="107" height="24" rx="3"/>
+    <rect x="455" y="458" width="107" height="24" rx="3"/>
+    <rect x="584" y="458" width="107" height="24" rx="3"/>
+    <rect x="584" y="490" width="107" height="24" rx="3"/>
+    <rect x="584" y="522" width="107" height="24" rx="3"/>
+    <rect x="713" y="458" width="107" height="24" rx="3"/>
+    <rect x="713" y="490" width="107" height="24" rx="3"/>
+    <rect x="713" y="522" width="107" height="24" rx="3"/>
+    <rect x="842" y="458" width="107" height="24" rx="3"/>
+  </g>
+  <g font-size="10.5" font-family="IBM Plex Mono, Consolas, monospace" text-anchor="middle">
+    <text x="379" y="474">feed_event</text>
+    <text x="379" y="506">collector_state</text>
+    <text x="508" y="474">popular_package</text>
+    <text x="637" y="474">stage1_result</text>
+    <text x="637" y="506">stage1_hourly</text>
+    <text x="637" y="538">stage_cursor</text>
+    <text x="766" y="474">stage2_result</text>
+    <text x="766" y="506">source_usage</text>
+    <text x="766" y="538">rdap_cache</text>
+    <text x="895" y="474">schema_migrations</text>
+  </g>
+  <g font-size="11" fill="#4F4D48" text-anchor="middle">
+    <text x="379" y="576">journal + cursor</text>
+    <text x="637" y="576">hits only; engine id</text>
+    <text x="766" y="576">evidence snapshot</text>
+    <text x="895" y="576">web reads all tables</text>
+  </g>
+
+  <!-- external: change feed (left) -->
+  <rect x="40" y="165" width="215" height="65" rx="4" fill="#F1EFEA" stroke="#8A8880" stroke-width="1.2"/>
+  <text x="147" y="186" text-anchor="middle" font-weight="600">npm registry change feed</text>
+  <text x="147" y="203" text-anchor="middle" font-size="11" font-family="IBM Plex Mono, Consolas, monospace">replicate.npmjs.com</text>
+  <text x="147" y="217" text-anchor="middle" font-size="11" font-family="IBM Plex Mono, Consolas, monospace">/registry/_changes</text>
+  <line x1="255" y1="197" x2="318" y2="197" stroke="#17181C" stroke-width="1.4" marker-end="url(#arrow)"/>
+  <text x="287" y="187" text-anchor="middle" font-size="11">GET</text>
+  <text x="287" y="223" text-anchor="middle" font-size="11" fill="#4F4D48">since=cursor</text>
+
+  <!-- browser (left) -->
+  <rect x="40" y="350" width="215" height="40" rx="4" fill="#F1EFEA" stroke="#8A8880" stroke-width="1.2"/>
+  <text x="147" y="367" text-anchor="middle" font-weight="600">Browser</text>
+  <text x="147" y="382" text-anchor="middle" font-size="11" fill="#4F4D48">analyst workstation (HTTPS)</text>
+  <line x1="255" y1="370" x2="303" y2="370" stroke="#17181C" stroke-width="1.4" marker-end="url(#arrow)"/>
+  <text x="279" y="361" text-anchor="middle" font-size="11">HTTP</text>
+
+  <!-- external sources (right) -->
+  <g fill="#F1EFEA" stroke="#8A8880" stroke-width="1.2">
+    <rect x="1010" y="170" width="215" height="52" rx="4"/>
+    <rect x="1010" y="240" width="215" height="52" rx="4"/>
+    <rect x="1010" y="310" width="215" height="52" rx="4"/>
+    <rect x="1010" y="380" width="215" height="52" rx="4"/>
+    <rect x="1010" y="450" width="215" height="52" rx="4"/>
+  </g>
+  <g font-size="12" font-family="IBM Plex Mono, Consolas, monospace" font-weight="600" text-anchor="middle">
+    <text x="1117" y="190">registry.npmjs.org</text>
+    <text x="1117" y="260">packages.ecosyste.ms</text>
+    <text x="1117" y="330">api.deps.dev</text>
+    <text x="1117" y="400">api.github.com</text>
+    <text x="1117" y="470">rdap.org</text>
+  </g>
+  <g font-size="11" fill="#4F4D48" text-anchor="middle">
+    <text x="1117" y="208">packument · 3000/h</text>
+    <text x="1117" y="278">repo state, maintainers, top list · 2000/h</text>
+    <text x="1117" y="348">attested source repo · 1000/h</text>
+    <text x="1117" y="418">commit exists · budget 4 000 of 5 000/h</text>
+    <text x="1117" y="488">e-mail domain age · 200/h</text>
+  </g>
+
+  <!-- stage2 -> bus -> sources -->
+  <g stroke="#EB6834" stroke-width="1.6" fill="none">
+    <path d="M720,165 V140 H995 V476"/>
+    <line x1="995" y1="196" x2="1008" y2="196" marker-end="url(#arrow)"/>
+    <line x1="995" y1="266" x2="1008" y2="266" marker-end="url(#arrow)"/>
+    <line x1="995" y1="336" x2="1008" y2="336" marker-end="url(#arrow)"/>
+    <line x1="995" y1="406" x2="1008" y2="406" marker-end="url(#arrow)"/>
+    <line x1="995" y1="476" x2="1008" y2="476" marker-end="url(#arrow)"/>
+    <path d="M780,285 H995"/>
+  </g>
+  <circle cx="995" cy="285" r="3.5" fill="#EB6834"/>
+  <text x="858" y="134" text-anchor="middle" font-size="11" fill="#EB6834">HTTPS · per-source hourly budget · skipped requests are recorded</text>
+  <text x="886" y="279" text-anchor="middle" font-size="11" fill="#4F4D48">package_names, daily</text>
+</svg>

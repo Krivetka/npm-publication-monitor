@@ -1,0 +1,52 @@
+{
+  "name": "npm-publish-monitor",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Continuous monitoring of npm registry publications with multi-stage filtering (diploma project)",
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "migrate": "node --env-file-if-exists=.env src/migrate.ts",
+    "db:reference": "node --env-file-if-exists=.env src/db/reference.ts",
+    "db:seed": "node --env-file-if-exists=.env src/db/seed.ts",
+    "db:docs": "node --env-file-if-exists=.env scripts/db-docs.mjs",
+    "collector": "node --env-file-if-exists=.env src/collector/main.ts",
+    "stage1": "node --env-file-if-exists=.env src/stage1/main.ts",
+    "stage2": "node --env-file-if-exists=.env src/stage2/main.ts",
+    "popular": "node --env-file-if-exists=.env src/popular/main.ts",
+    "web": "node --env-file-if-exists=.env src/web/main.ts",
+    "maintenance": "node --env-file-if-exists=.env src/maintenance/main.ts",
+    "typecheck": "tsc",
+    "test": "node --test \"test/**/*.test.ts\"",
+    "docs:pdf": "node documentation/build.mjs",
+    "api:spec": "node scripts/api-spec.mjs",
+    "api:examples": "node scripts/api-examples.mjs",
+    "api:lint": "npx @redocly/cli lint",
+    "ui:audit": "node scripts/ui-audit.mjs",
+    "build:web": "node scripts/build-web.mjs",
+    "test:e2e": "node --test \"test/e2e/*.e2e.mjs\"",
+    "test:coverage": "node --test --experimental-test-coverage --test-reporter=spec --test-reporter-destination=stdout --test-reporter=lcov --test-reporter-destination=coverage/lcov.info \"test/**/*.test.ts\" && node scripts/coverage-all.mjs coverage/lcov.info",
+    "lint": "biome check",
+    "format": "biome check --write"
+  },
+  "dependencies": {
+    "htm": "3.1.1",
+    "postgres": "3.4.9",
+    "preact": "11.0.1",
+    "swagger-ui-dist": "5.33.2",
+    "ws": "8.22.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.6.9",
+    "@types/node": "24.19.2",
+    "@types/ws": "8.18.2",
+    "esbuild": "0.28.2",
+    "marked": "18.1.1",
+    "pdf-lib": "1.17.1",
+    "pdfjs-dist": "6.4.299",
+    "preact-render-to-string": "6.8.3",
+    "typescript": "7.0.2"
+  }
+}

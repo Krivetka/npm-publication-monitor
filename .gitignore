@@ -1,0 +1,16 @@
+node_modules/
+.env
+.deploy.env
+*.log
+# the source docx lives next to the repo; its text copy is notes/description.md
+*.docx
+~$*
+# database exports for the replay (see evaluation/README.md)
+evaluation/data/
+documentation/ba/BA_*.html
+# production bundle of the dashboard (npm run build:web)
+src/web/static/dist/
+# the same bundle copied for an image built with WEB=prebuilt
+web-dist/
+# coverage report (npm run test:coverage)
+coverage/
