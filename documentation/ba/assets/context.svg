@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 640" width="1100" height="640" font-family="Segoe UI, Arial, sans-serif" font-size="14">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#333"/></marker>
+  </defs>
+  <rect width="1100" height="640" fill="#fff"/>
+  <text x="20" y="28" font-size="18" font-weight="600" fill="#111">Context diagram: the npm publication monitor, its users and the external systems</text>
+
+  <!-- system -->
+  <rect x="380" y="220" width="340" height="200" rx="14" fill="#e8f0fb" stroke="#1f5fbf" stroke-width="2"/>
+  <text x="550" y="256" text-anchor="middle" font-size="17" font-weight="600" fill="#111">npm Publication Monitor</text>
+  <text x="550" y="282" text-anchor="middle" fill="#345" font-size="13">collector · stage 1 · stage 2 · storage</text>
+  <text x="550" y="300" text-anchor="middle" fill="#345" font-size="13">REST API · WebSocket · dashboard</text>
+  <text x="550" y="336" text-anchor="middle" fill="#111" font-size="13">journal of events · scores · alerts</text>
+  <text x="550" y="354" text-anchor="middle" fill="#111" font-size="13">evidence snapshots · analyst verdicts</text>
+  <text x="550" y="390" text-anchor="middle" fill="#555" font-size="12">one container image, six processes, one PostgreSQL database</text>
+
+  <!-- users (left) -->
+  <g>
+    <circle cx="90" cy="150" r="14" fill="none" stroke="#333" stroke-width="1.5"/>
+    <path d="M90 164v36M70 180h40M90 200l-16 26M90 200l16 26" stroke="#333" stroke-width="1.5" fill="none"/>
+    <text x="90" y="250" text-anchor="middle" font-weight="600">Security analyst</text>
+    <text x="90" y="268" text-anchor="middle" fill="#555" font-size="12">reviews alerts, records verdicts</text>
+  </g>
+  <g>
+    <circle cx="90" cy="330" r="14" fill="none" stroke="#333" stroke-width="1.5"/>
+    <path d="M90 344v36M70 360h40M90 380l-16 26M90 380l16 26" stroke="#333" stroke-width="1.5" fill="none"/>
+    <text x="90" y="430" text-anchor="middle" font-weight="600">Package maintainer</text>
+    <text x="90" y="448" text-anchor="middle" fill="#555" font-size="12">checks own package history</text>
+  </g>
+  <g>
+    <circle cx="90" cy="510" r="14" fill="none" stroke="#333" stroke-width="1.5"/>
+    <path d="M90 524v36M70 540h40M90 560l-16 26M90 560l16 26" stroke="#333" stroke-width="1.5" fill="none"/>
+    <text x="110" y="610" text-anchor="middle" font-weight="600">Researcher / operator</text>
+    <text x="110" y="628" text-anchor="middle" fill="#555" font-size="12">replays, calibrates, operates</text>
+  </g>
+  <g stroke="#333" stroke-width="1.3" fill="none" marker-end="url(#a)">
+    <path d="M170 200 H380" marker-start="url(#a)"/>
+    <path d="M170 380 H380" marker-start="url(#a)"/>
+    <path d="M170 560 H330 V420 H380"/>
+  </g>
+  <text x="275" y="192" text-anchor="middle" font-size="12" fill="#555">alerts, event cards, verdicts (HTTPS, WebSocket)</text>
+  <text x="275" y="372" text-anchor="middle" font-size="12" fill="#555">package search, version history</text>
+  <text x="250" y="552" text-anchor="middle" font-size="12" fill="#555">exports, replay, parameters, deploy</text>
+
+  <!-- external systems (right) -->
+  <g fill="#fff" stroke="#333">
+    <rect x="840" y="80" width="230" height="56" rx="8"/>
+    <rect x="840" y="160" width="230" height="56" rx="8"/>
+    <rect x="840" y="240" width="230" height="56" rx="8"/>
+    <rect x="840" y="320" width="230" height="56" rx="8"/>
+    <rect x="840" y="400" width="230" height="56" rx="8"/>
+    <rect x="840" y="480" width="230" height="56" rx="8"/>
+  </g>
+  <g fill="#111" font-weight="600" text-anchor="middle">
+    <text x="955" y="103">npm registry: change feed</text>
+    <text x="955" y="183">npm registry: package documents</text>
+    <text x="955" y="263">ecosyste.ms</text>
+    <text x="955" y="343">deps.dev</text>
+    <text x="955" y="423">GitHub REST API</text>
+    <text x="955" y="503">RDAP servers</text>
+  </g>
+  <g fill="#555" font-size="12" text-anchor="middle">
+    <text x="955" y="123">≈ 1.4 events/s, no payload</text>
+    <text x="955" y="203">versions, times, manifests</text>
+    <text x="955" y="283">top-10 000 names, repository state</text>
+    <text x="955" y="363">attested source of a version</text>
+    <text x="955" y="443">commit existence, 5 000 req/h</text>
+    <text x="955" y="523">e-mail domain registration date</text>
+  </g>
+  <g stroke="#333" stroke-width="1.3" fill="none" marker-end="url(#a)">
+    <path d="M840 108 H760 V240 H720"/>
+    <path d="M720 290 H780 V188 H840"/>
+    <path d="M720 320 H800 V268 H840"/>
+    <path d="M720 350 H840 V348"/>
+    <path d="M720 380 H800 V428 H840"/>
+    <path d="M720 405 H770 V508 H840"/>
+  </g>
+  <text x="780" y="230" text-anchor="middle" font-size="12" fill="#555">poll every 5 s</text>
+  <text x="955" y="580" text-anchor="middle" font-size="12" fill="#555">all external calls go through one budget layer:</text>
+  <text x="955" y="596" text-anchor="middle" font-size="12" fill="#555">a token bucket per source, skips recorded</text>
+  <text x="550" y="610" text-anchor="middle" font-size="12" fill="#555">Operations (not users): Docker Compose on an always-on node,</text>
+  <text x="550" y="626" text-anchor="middle" font-size="12" fill="#555">Grafana Cloud for logs, an external uptime check of /api/v1/health.</text>
+</svg>

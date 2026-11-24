@@ -4,7 +4,7 @@ Continuous monitoring of npm registry publications with multi-stage filtering �
 *"Continuous Monitoring System for Early Detection of Suspicious npm Package Publications with
 Multi-Stage Filtering"* (Ivan Kuliashov, European Humanities University).
 
-Thesis documentation — [documentation/](documentation/) (`npm run docs:pdf` builds the PDF).
+Thesis documentation — [documentation/](documentation/) (`npm run docs:pdf` builds the PDF). Business-analysis block — [documentation/ba/](documentation/ba/) (English, with a Russian copy in `ru/`).
 
 ![Pipeline: collector, stage 1 without network requests, stage 2 with enrichment, final score](documentation/docs/assets/diagrams/pipeline.svg)
 

@@ -1,0 +1,19 @@
+# Introduction
+
+**Relevance and problem.** The npm registry is the supply chain of practically every JavaScript application. In the second quarter of 2026 it accounted for 96.6 % of all malicious open-source packages recorded by Sonatype [1]. The registry's answer, a content scan of every new package before it becomes installable (live since 28 July 2026 [2]), did not stop the ChainDrop worm a week later: 444 packages and 2 212 versions were published in under four hours from compromised but legitimate accounts, with valid provenance attestations [3], [4]. A content scanner cannot tell a stolen credential from its owner. What distinguishes such publications is their metadata — who published, when, in what rhythm, into which release lines — and none of the services examined in Section 1.3 watches this layer continuously for the consumer. Three groups have the problem: security engineers of organisations that consume npm packages learn about a compromised package from the news, when the evidence is already gone; maintainers have no signal that their own package was published by someone else; researchers cannot measure the residual risk after the registry's gate, because the registry deletes the malicious versions. The problem matters now because the attacks of 2026 passed a gate that did not exist a year earlier, so the residual risk after that gate is unmeasured.
+
+**Goal.** To analyse how suspicious npm publications are detected today and to specify verifiable requirements for a continuous, metadata-based monitoring service that gives security engineers an actionable signal before the advisory. The bachelor project as a whole designs, implements and evaluates this service; this block covers its analysis and requirements.
+
+**Objectives:**
+
+1. describe how suspicious publications are detected today and where time, signal and evidence are lost (Section 1.1);
+2. review the sources and six analogs and derive what a new solution must do (Sections 1.2–1.4);
+3. state the vision, the business goals with measurable KPIs, the stakeholders and the scope (Sections 2.1–2.3);
+4. specify the solution concept and the functional requirements as epics, user stories with acceptance criteria and use cases (Sections 2.4–2.6);
+5. specify the non-functional and legal requirements, the risks and the way the result will be verified (Sections 2.7–2.10).
+
+**Object and subject.** The object is the process of detecting suspicious publications in the public npm registry: from the moment a version is published to the moment a security engineer has evidence to act on. The subject is the automatable side of that process — scoring the stream of publication events from metadata and package history, selecting a small set of candidates for enrichment, and producing explainable alerts with durable evidence.
+
+**Methods.** Requirements were gathered by four methods. *Document analysis*: the project description, the registry's API documentation and announcements [2], [5], incident write-ups [3], [6] and the standards on provenance and secure development [7]–[9]. *Measurement*: a probe of the live change feed, package-document sizes and external-API quotas, run before the design (Section 1.2). *Benchmarking*: six analog tools examined and tried out (Section 1.3). *Expert consultation*: two sessions with the supervisor established the attack classes, the two-stage architecture and the placement of version rules; no external interviews were held (Section 2.8).
+
+**Structure.** Chapter 1 analyses the current process, the sources and the analogs, and lists the problems to solve. Chapter 2 states the requirements: vision and KPIs, stakeholders, scope, the solution concept, functional and non-functional requirements, legal constraints, risks and verification. Appendix A holds the backlog, Appendix B the diagrams at full size.

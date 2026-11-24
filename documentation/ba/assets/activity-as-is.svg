@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1260 760" width="1260" height="760" font-family="Segoe UI, Arial, sans-serif" font-size="14">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#333"/></marker>
+    <marker id="arr-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#1f5fbf"/></marker>
+  </defs>
+  <rect x="0" y="0" width="1260" height="760" fill="#fff"/>
+  <text x="20" y="28" font-size="18" font-weight="600" fill="#111">AS-IS: how a malicious npm publication is detected today, and the TO-BE lane of the monitor</text>
+
+  <!-- lanes -->
+  <g stroke="#999" stroke-width="1" fill="none">
+    <rect x="20" y="48" width="1170" height="118"/>
+    <rect x="20" y="166" width="1170" height="118"/>
+    <rect x="20" y="284" width="1170" height="118"/>
+    <rect x="20" y="402" width="1170" height="140"/>
+    <rect x="20" y="560" width="1170" height="180" stroke="#1f5fbf" stroke-width="1.5"/>
+  </g>
+  <g fill="#f3f3f3" stroke="#999"><rect x="20" y="48" width="130" height="118"/><rect x="20" y="166" width="130" height="118"/><rect x="20" y="284" width="130" height="118"/><rect x="20" y="402" width="130" height="140"/></g>
+  <rect x="20" y="560" width="130" height="180" fill="#e8f0fb" stroke="#1f5fbf" stroke-width="1.5"/>
+  <g font-weight="600" fill="#111" text-anchor="middle">
+    <text x="85" y="112">Attacker</text>
+    <text x="85" y="230">Registry (npm)</text>
+    <text x="85" y="337">Security vendors,</text><text x="85" y="355">advisory databases</text>
+    <text x="85" y="466">Security engineer</text><text x="85" y="484">(consumer)</text>
+    <text x="85" y="640" fill="#1f5fbf">TO-BE:</text><text x="85" y="658" fill="#1f5fbf">monitoring</text><text x="85" y="676" fill="#1f5fbf">service</text>
+  </g>
+
+  <!-- attacker lane -->
+  <circle cx="190" cy="107" r="9" fill="#333"/>
+  <rect x="225" y="78" width="200" height="58" rx="10" fill="#fff" stroke="#333"/>
+  <text x="325" y="102" text-anchor="middle">Obtain a publishing path</text>
+  <text x="325" y="120" text-anchor="middle" fill="#555" font-size="12">token, hijacked CI, look-alike name</text>
+  <rect x="470" y="78" width="170" height="58" rx="10" fill="#fff" stroke="#333"/>
+  <text x="555" y="102" text-anchor="middle">Publish malicious</text>
+  <text x="555" y="120" text-anchor="middle">version(s)</text>
+  <g stroke="#333" stroke-width="1.3" fill="none" marker-end="url(#arr)">
+    <path d="M199 107H225"/><path d="M425 107H470"/>
+  </g>
+
+  <!-- registry lane -->
+  <rect x="470" y="190" width="170" height="58" rx="10" fill="#fff" stroke="#333"/>
+  <text x="555" y="214" text-anchor="middle">Content scan before</text>
+  <text x="555" y="232" text-anchor="middle">the package is installable</text>
+  <polygon points="720,195 760,225 720,255 680,225" fill="#fff" stroke="#333"/>
+  <text x="720" y="229" text-anchor="middle" font-size="12">known?</text>
+  <rect x="800" y="190" width="130" height="58" rx="10" fill="#fff" stroke="#333"/>
+  <text x="865" y="214" text-anchor="middle">Block or hold</text>
+  <text x="865" y="232" text-anchor="middle" fill="#555" font-size="12.5">for review</text>
+  <rect x="960" y="190" width="200" height="58" rx="10" fill="#fff" stroke="#333"/>
+  <text x="1060" y="214" text-anchor="middle">Version becomes installable</text>
+  <text x="1060" y="232" text-anchor="middle" fill="#555" font-size="12.5">valid provenance, if from CI</text>
+  <g stroke="#333" stroke-width="1.3" fill="none" marker-end="url(#arr)">
+    <path d="M555 136V190"/><path d="M640 219H680"/><path d="M760 225H800"/><path d="M930 219H960"/>
+  </g>
+  <text x="773" y="214" font-size="12" fill="#555">yes</text>
+  <text x="940" y="214" font-size="12" fill="#555">no</text>
+  <text x="1060" y="268" text-anchor="middle" font-size="12" fill="#b00">compromised publisher and worm payloads pass</text>
+
+  <!-- vendors lane -->
+  <rect x="960" y="305" width="200" height="58" rx="10" fill="#fff" stroke="#333"/>
+  <text x="1060" y="329" text-anchor="middle">Notice the campaign</text>
+  <text x="1060" y="347" text-anchor="middle" fill="#555" font-size="12.5">telemetry, researcher report: hours–days</text>
+  <rect x="720" y="305" width="200" height="58" rx="10" fill="#fff" stroke="#333"/>
+  <text x="820" y="329" text-anchor="middle">Publish an advisory</text>
+  <text x="820" y="347" text-anchor="middle" fill="#555" font-size="12.5">GHSA / CVE, curated notes</text>
+  <rect x="470" y="305" width="200" height="58" rx="10" fill="#fff" stroke="#333"/>
+  <text x="570" y="329" text-anchor="middle">Registry removes the versions</text>
+  <text x="570" y="347" text-anchor="middle" fill="#b00" font-size="12.5">evidence is lost; only dates remain</text>
+  <g stroke="#333" stroke-width="1.3" fill="none" marker-end="url(#arr)">
+    <path d="M1060 248V305"/><path d="M960 334H920"/><path d="M720 334H670"/>
+  </g>
+
+  <!-- consumer lane -->
+  <rect x="720" y="430" width="200" height="58" rx="10" fill="#fff" stroke="#333"/>
+  <text x="820" y="454" text-anchor="middle">npm audit / scanner reports</text>
+  <text x="820" y="472" text-anchor="middle" fill="#555" font-size="12.5">only after the advisory exists</text>
+  <rect x="470" y="430" width="200" height="58" rx="10" fill="#fff" stroke="#333"/>
+  <text x="570" y="454" text-anchor="middle">Investigate and remediate</text>
+  <text x="570" y="472" text-anchor="middle" fill="#555" font-size="12.5">repeated in every organisation</text>
+  <circle cx="400" cy="459" r="10" fill="none" stroke="#333" stroke-width="1.5"/><circle cx="400" cy="459" r="6" fill="#333"/>
+  <g stroke="#333" stroke-width="1.3" fill="none" marker-end="url(#arr)">
+    <path d="M820 363V430"/><path d="M720 459H670"/><path d="M470 459H410"/>
+  </g>
+  <text x="1060" y="455" text-anchor="middle" font-size="12" fill="#b00">window of exposure:</text>
+  <text x="1060" y="471" text-anchor="middle" font-size="12" fill="#b00">from publication to advisory</text>
+
+  <!-- TO-BE lane -->
+  <g stroke="#1f5fbf" stroke-width="1.3" fill="none" marker-end="url(#arr-b)">
+    <path d="M1160 219 H1215 V640 H1140 V620" stroke-dasharray="5 4"/>
+    <path d="M905 620H880"/><path d="M700 620H675"/><path d="M510 620H485"/><path d="M300 620H280"/>
+  </g>
+  <text x="1225" y="430" font-size="12" fill="#1f5fbf" transform="rotate(90 1225 430)">change feed, seconds later</text>
+  <rect x="905" y="590" width="215" height="60" rx="10" fill="#e8f0fb" stroke="#1f5fbf"/>
+  <text x="1012" y="614" text-anchor="middle">Collector: journal with cursor,</text>
+  <text x="1012" y="632" text-anchor="middle" fill="#345" font-size="12.5">appearance interval per event</text>
+  <rect x="700" y="590" width="180" height="60" rx="10" fill="#e8f0fb" stroke="#1f5fbf"/>
+  <text x="790" y="614" text-anchor="middle">Stage 1: score without</text>
+  <text x="790" y="632" text-anchor="middle" fill="#345" font-size="12.5">network, 2–3 % candidates</text>
+  <rect x="510" y="590" width="165" height="60" rx="10" fill="#e8f0fb" stroke="#1f5fbf"/>
+  <text x="592" y="614" text-anchor="middle">Stage 2: enrich under</text>
+  <text x="592" y="632" text-anchor="middle" fill="#345" font-size="12.5">quotas, evidence snapshot</text>
+  <rect x="300" y="590" width="185" height="60" rx="10" fill="#e8f0fb" stroke="#1f5fbf"/>
+  <text x="392" y="614" text-anchor="middle">Alert with decomposed score</text>
+  <text x="392" y="632" text-anchor="middle" fill="#345" font-size="12.5">minutes after publication</text>
+  <rect x="160" y="590" width="120" height="60" rx="10" fill="#e8f0fb" stroke="#1f5fbf"/>
+  <text x="220" y="614" text-anchor="middle">Analyst verdict</text>
+  <text x="220" y="632" text-anchor="middle" fill="#345" font-size="12.5">ground truth</text>
+  <text x="640" y="700" text-anchor="middle" font-size="13" fill="#1f5fbf">TO-BE: the alert and the evidence exist before the advisory and before the registry purges the version; the verdict feeds the evaluation.</text>
+  <text x="640" y="722" text-anchor="middle" font-size="12" fill="#555">Legend: black — AS-IS activities and control flow; blue — TO-BE activities of the proposed service; red — where time, signal or evidence is lost.</text>
+</svg>
